@@ -6,7 +6,7 @@
 #include "field.h"
 
 
-enum class HintType {vertical};
+enum class HintType {vertical, ajacent};
 
 class Hint
 {
@@ -30,6 +30,15 @@ class HintVertical: public Hint
 public:
 	HintVertical(Field* field);
 	~HintVertical();
+
+	bool	applyToField();
+};
+
+class HintAjacent: public Hint
+{
+public:
+	HintAjacent(Field* field);
+	~HintAjacent();
 
 	bool	applyToField();
 };

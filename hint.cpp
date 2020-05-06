@@ -28,3 +28,20 @@ bool HintVertical::applyToField()
 {
 	return false;
 }
+
+HintAjacent::HintAjacent(Field *field)
+	: Hint(field)
+{
+	type = HintType::ajacent;
+}
+
+HintAjacent::~HintAjacent()
+{
+
+}
+
+bool HintAjacent::applyToField()
+{
+	return false;
+}
+
