@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(ZweiStein
     main.cpp
     game.cpp game.h
+    cell.cpp cell.h
     field.cpp field.h
     interface.cpp interface.h
     command.cpp command.h
