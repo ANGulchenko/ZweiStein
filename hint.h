@@ -2,33 +2,34 @@
 #define HINT_H
 
 #include <utility>
+#include <random>
+#include <algorithm>
 
 #include "field.h"
 
 
-enum class HintType {vertical, ajacent};
+enum class HintType {empty, vertical, ajacent};
 
 class Hint
 {
 public:
-	Hint(Field* field);
+	Hint();
 	virtual ~Hint();
 
 	bool	virtual applyToField() = 0;
 
 	HintType type;
-	std::pair<int, int> first_literal;	// row-index (like in Interface::_literals)
-	std::pair<int, int> second_literal;
-	std::pair<int, int> third_literal;
+	Cell* first_cell = nullptr;
+	Cell* second_cell = nullptr;
+	Cell* third_cell = nullptr;
 
-	Field*	field;
-
+	std::random_device random_device;
 };
 
 class HintVertical: public Hint
 {
 public:
-	HintVertical(Field* field);
+	HintVertical();
 	~HintVertical();
 
 	bool	applyToField();
@@ -37,7 +38,7 @@ public:
 class HintAjacent: public Hint
 {
 public:
-	HintAjacent(Field* field);
+	HintAjacent();
 	~HintAjacent();
 
 	bool	applyToField();

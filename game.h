@@ -5,6 +5,7 @@
 
 #include "interface.h"
 #include "field.h"
+#include "hints.h"
 #include "command.h"
 
 
@@ -17,7 +18,8 @@ public:
 	void	initPuzzle();
 
 private:
-	Field*		field;
+	Field&		field;
+	Hints&		hints;
 	Interface*	interface;
 	Command*	command;
 };

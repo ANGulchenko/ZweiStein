@@ -2,11 +2,12 @@
 #include "game.h"
 
 Game::Game()
+	: field (Field::Instance())
+	, hints (Hints::Instance())
 {
-	field = new Field();
-	field->fillField();
+//	field.fillField();
 
-	interface = new Interface(field);
+	interface = new Interface(&field);
 
 	command = new Command();
 }
@@ -15,16 +16,13 @@ Game::~Game()
 {
 	delete command;
 	delete interface;
-	delete field;
+//	delete field;
 }
 
-void	initPuzzle()
+void	Game::initPuzzle()
 {
-	// 1) Create random (with some probability) Hint;
-	// 2) Apply it to the field;
-			// a) if Hint was useful then apply all Hints until field stop changing
-			// b) if Hint wasn't useful -- create new of the same type
-	// 3) Check if Field is Filled, if not -- goto 1
+	interface->printGame();
+	hints.createFullSetOfHints();
 }
 
 void	Game::start()
@@ -45,7 +43,7 @@ void	Game::start()
 		}else
 		if (command->type == CommandType::switch_subvalue)
 		{
-			field->switchSubValue(command->row, command->column, command->value);
+			field.switchOffSubValue(command->row, command->column, command->value);
 		}
 	}
 
