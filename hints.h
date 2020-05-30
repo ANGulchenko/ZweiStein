@@ -6,6 +6,7 @@
 #include <random>
 
 #include "hint.h"
+#include "interface.h"
 
 class Hints
 {
@@ -20,6 +21,7 @@ public:
 	void	createFullSetOfHints();
 
 	std::vector<Hint*> hints;
+//	Interface* i_face;
 private:
 		Hints();
 		Hints(const Hints& root) = delete;

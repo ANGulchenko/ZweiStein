@@ -1,4 +1,5 @@
 ﻿#include "hint.h"
+#include <iostream>
 
 Hint::Hint()
 {
@@ -17,6 +18,8 @@ HintVertical::HintVertical()
 	std::vector<Cell*> basic_cells = Field::Instance().getAllCellsWhichValueIsKnownToPlayer();
 	std::shuffle(basic_cells.begin(), basic_cells.end(), random_device);
 	first_cell = basic_cells[0];
+
+	//std::cout << "HV first_cell_test. Row="<<first_cell->row<<" Col="<<first_cell->col << std::endl;
 
 	// now we should find unknown to player cell in this col
 	int col = first_cell->col;
@@ -58,8 +61,9 @@ bool HintVertical::applyToField()
 
 	if (second_cell != nullptr)
 	{
-		second_cell->tryValue(second_cell->value);
-	}else
+		field.tryValue(second_cell->row, second_cell->col, second_cell->getValue());
+	}
+	else
 	{
 		return false;
 	}
@@ -77,11 +81,13 @@ HintAjacent::HintAjacent()
 	type = HintType::ajacent;
 
 	std::vector<Cell*> basic_cells = Field::Instance().getAllCellsWhichValueIsKnownToPlayer();
+	//std::cout << "basic_cells.size()="<<basic_cells.size()<<std::endl;
 	std::shuffle(basic_cells.begin(), basic_cells.end(), random_device);
 	first_cell = basic_cells[0];
 
 	// now we should find unknown to player cell in the ajacent columns
 	int col = first_cell->col;
+
 
 	std::vector<Cell*> unknown_cells;
 	for (int r = 0; r < 6; r++)
@@ -89,16 +95,20 @@ HintAjacent::HintAjacent()
 		if (col - 1 >= 0)
 		{
 			Cell* cell_tmp = Field::Instance().getCell(r, col-1);
+			//std::cout << "Adj. Left cell.r="<<r<<" col="<<col-1<<std::endl;
 			if (cell_tmp->player_knows_value == false)
 			{
+				//std::cout << "Pushing Left cell"<<std::endl;
 				unknown_cells.push_back(cell_tmp);
 			}
 		}
 		if (col + 1 < 6)
 		{
 			Cell* cell_tmp = Field::Instance().getCell(r, col+1);
+			//std::cout << "Adj. Right cell.r="<<r<<" col="<<col+1<<std::endl;
 			if (cell_tmp->player_knows_value == false)
 			{
+				//std::cout << "Pushing Right cell"<<std::endl;
 				unknown_cells.push_back(cell_tmp);
 			}
 		}
@@ -108,10 +118,12 @@ HintAjacent::HintAjacent()
 	{
 		std::shuffle(unknown_cells.begin(), unknown_cells.end(), random_device);
 		second_cell = unknown_cells[0];
+		//std::cout << "second cell exists!"<<std::endl;
 	}
 	else
 	{
 		//throw exception
+		//std::cout << "unknown_cells.empty()"<<std::endl;
 	}
 }
 
@@ -131,25 +143,69 @@ bool HintAjacent::applyToField()
 	}
 
 	size_t row = second_cell->row;
-	int val = second_cell->value;
+	int val = second_cell->getValue();
 
 	size_t basic_col = first_cell->col;
 
-	if (basic_col >= 1)
+	// If one(only one!) of the ajacent cell is known to the player
+	// that means that we know the other
+
+	/////////////////////////////////////////////////////////////////////////
+	// the basic cell is near the border, so it has only 1
+	// suspect. And we know its value.
+
+	if (basic_col == 0)
 	{
-		field.switchOffSubValue(row, basic_col - 1, val);
+		field.tryValue(row, 1, val);
+		if (field.determinant() == old_determinant) return false;
+	}else
+	if (basic_col == 5)
+	{
+		field.tryValue(row, 4, val);
+		if (field.determinant() == old_determinant) return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+	Cell* suspect1 = field.getCell(row, basic_col - 1);
+	Cell* suspect2 = field.getCell(row, basic_col + 1);
+
+	if (suspect1->player_knows_value == true && suspect1->getValue() == val) return false;
+	if (suspect2->player_knows_value == true && suspect2->getValue() == val) return false;
+	if (suspect1->player_knows_value == true && suspect2->player_knows_value == true) return false;
+
+	if ((suspect1->player_knows_value == true && suspect2->player_knows_value == false) ||
+	   (suspect1->player_knows_value == false && suspect2->player_knows_value == true))
+	{
+		// only one suspect is known
+		if (suspect1->player_knows_value == true)
+		{
+			field.tryValue(row, basic_col + 1, val);
+			if (field.determinant() == old_determinant) return false;
+		}else
+		if (suspect2->player_knows_value == true)
+		{
+			field.tryValue(row, basic_col - 1, val);
+			if (field.determinant() == old_determinant) return false;
+		}
 	}
 
-	if (basic_col + 1 < 6)
+	// At this moment we sure that we cannot guess VALUE so
+	// we just must switch off VAL in all cells except adjacent.
+	for (int c = 0; c < 6; c++)
 	{
-		field.switchOffSubValue(row, basic_col + 1, val);
+		Cell* cell = field.getCell(row, c);
+		if ((cell->col == (basic_col - 1)) || (cell->col == (basic_col + 1)))
+		{
+			// That are cell which can have VAl as val
+			// so we do nothing with them
+		}
+		else
+		{
+			field.switchOffSubValue(row, c, val);
+		}
 	}
 
-
-	if (field.determinant() == old_determinant)
-	{
-		return false;
-	}
+	if (field.determinant() == old_determinant) return false;
 
 	return true;
 }

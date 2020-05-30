@@ -21,19 +21,21 @@ Game::~Game()
 
 void	Game::initPuzzle()
 {
-	interface->printGame();
+//	hints.i_face = interface;
+//	interface->printGame();
 	hints.createFullSetOfHints();
+	field.resetSubValues();
 }
 
 void	Game::start()
 {
 	//main cycle: print game| read and parse commands | use commands
-	bool win = false;
 	std::string command_str;
 
-	while (!win)
+	while (!field.isWin())
 	{
 		interface->printGame();
+		interface->printHints();
 		std::cin >> command_str;
 		command->parse(command_str);
 
@@ -43,8 +45,24 @@ void	Game::start()
 		}else
 		if (command->type == CommandType::switch_subvalue)
 		{
-			field.switchOffSubValue(command->row, command->column, command->value);
+			bool res = field.switchOffSubValue(command->row, command->column, command->value);
+			if (!res)
+			{
+				interface->printLose();
+				exit(0);
+			}
+		}else
+		if (command->type == CommandType::claim)
+		{
+			bool res = field.tryValue(command->row, command->column, command->value);
+			if (!res)
+			{
+				interface->printLose();
+				exit(0);
+			}
 		}
 	}
+
+	interface->printWin();
 
 }

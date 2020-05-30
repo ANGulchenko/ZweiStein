@@ -11,6 +11,9 @@ Interface::Interface(Field* field)
 	_literals[3] = {"Θ", "Ψ", "Π", "Σ", "Φ", "Ω"};
 	_literals[4] = {"₹", "€", "£", "$", "¥", "₴"};
 	_literals[5] = {"+", "-", "÷", "√", "×", "="};
+
+	_hint_literals[HintType::vertical] = "⇕";
+	_hint_literals[HintType::ajacent] = "⇔";
 }
 
 std::string		Interface::printCell(int row, int col)
@@ -21,7 +24,7 @@ std::string		Interface::printCell(int row, int col)
 	if (cell->player_knows_value)
 	{
 		// Player knows the real value so there is no need to show subvalues
-		subvalue_str += _literals[row][cell->value];
+		subvalue_str += _literals[row][cell->getValue()];
 		subvalue_str += "▒▒▒▒▒";
 	}else
 	{
@@ -80,4 +83,55 @@ void	Interface::printGame()
 void	Interface::printCommandError()
 {
 	std::cout << "Wrong command!\n";
+}
+
+void	Interface::printHints()
+{
+	std::cout <<"\n\n";
+	Hints& hints = Hints::Instance();
+	int index = 0;
+	int hints_per_row = 10;
+	int index_in_row = 0;
+	for (Hint* hint : hints.hints)
+	{
+		switch (hint->type)
+		{
+			case HintType::vertical:
+			{
+				std::cout << index << ")";
+				std::cout << _literals[hint->first_cell->row][hint->first_cell->getValue()];
+				std::cout << _hint_literals[HintType::vertical];
+				std::cout << _literals[hint->second_cell->row][hint->second_cell->getValue()];
+				std::cout << "  ";
+			}break;
+			case HintType::ajacent:
+			{
+				std::cout << index << ")";
+				std::cout << _literals[hint->first_cell->row][hint->first_cell->getValue()];
+				std::cout << _hint_literals[HintType::ajacent];
+				std::cout << _literals[hint->second_cell->row][hint->second_cell->getValue()];
+				std::cout << "  ";
+			}break;
+
+			default: break;
+		}
+
+		index++;
+		index_in_row++;
+		if (index_in_row >= hints_per_row)
+		{
+			index_in_row = 0;
+			std::cout << "\n";
+		}
+	}
+}
+
+void	Interface::printWin()
+{
+	std::cout <<"\nWIN!\n";
+}
+
+void	Interface::printLose()
+{
+	std::cout <<"\nLOSE!\n";
 }

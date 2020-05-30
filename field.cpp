@@ -8,82 +8,93 @@ Field::Field()
 {
 	std::random_device rd;
 	std::mt19937 g(rd());
-	for (auto &row : _field)
+	for (auto &row : field)
 	{
 		int val = 0;
 		for (auto &col : row)
 		{
-			col.value = val;
+			col.setValue(val);
 			val++;
 		}
 	}
 
-	for (auto &row : _field)
+	for (auto &row : field)
 	{
 		std::shuffle(row.begin(), row.end(), g);
 	}
 
-	for (std::size_t row = 0; row < _field.size(); row++)
+	for (std::size_t row = 0; row < field.size(); row++)
 	{
-		for (std::size_t col = 0; col < _field[0].size(); col++)
+		for (std::size_t col = 0; col < field[0].size(); col++)
 		{
-			_field[row][col].row = row;
-			_field[row][col].col = col;
+			field[row][col].row = row;
+			field[row][col].col = col;
 		}
 	}
 
 	// We need a few Cells, which are known to player, to start with.
-	tryValue(0, 0, _field[0][0].value);
-	tryValue(1, 1, _field[1][1].value);
+	tryValue(0, 0, field[0][0].getValue());
+	tryValue(1, 1, field[1][1].getValue());
 
 }
 
 
 bool	Field::tryValue(int row, int column, int val)
 {
-	bool res = _field[row][column].tryValue(val);
-	// If we guessed the value, it would be logical to automatically
-	// switch off corresponding subvalues in the whole row
-	if (res)
+	Cell* test_cell = getCell(row, column);
+
+	if (test_cell->getValue() == val)
 	{
-		for (auto cell: _field[row])
+		test_cell->subvalues = {false, false, false, false, false, false};
+		test_cell->subvalues[val] = true;
+		test_cell->player_knows_value = true;
+
+		// If we guessed the value, it would be logical to automatically
+		// switch off corresponding subvalues in the whole row
+		for (auto &cell: field[row])
 		{
-			if (_field[row][column].player_knows_value == false)
+			if (cell.player_knows_value == false)
 			{
 				switchOffSubValue(cell.row, cell.col, val);
 			}
 		}
+
+		return true;
 	}
 
-	return res;
+	return false;
 }
 
 bool	Field::switchOffSubValue(int row, int column, int subvalue_index)
 {
-	bool res = _field[row][column].switchOffSubValue(subvalue_index);
-	if (res)
+	Cell* test_cell = getCell(row, column);
+
+	// We lose if we try to switch off the real value
+	if (test_cell->getValue() == subvalue_index)
 	{
-		// If switching is ok we should also check if we can automatically switch off
-		// something in the same row.
-		if (_field[row][column].player_knows_value == true)
-		{
-			tryValue(row, column, subvalue_index);
-		}
+		return false;
+	}
+	test_cell->subvalues[subvalue_index] = false;
+
+	// Maybe after switching off this subvalue we already know the real value?
+	if (test_cell->countSubValues() <= 1)
+	{
+		tryValue(row, column, subvalue_index);
 	}
 
-	return res;
+	return true;
 
 }
 
 Cell*	Field::getCell(int row, int column)
 {
-	return &(_field[row][column]);
+	return &(field[row][column]);
 }
 
 int	Field::determinant()
 {
 	int determinant = 0;
-	for (auto cell_row: _field)
+	for (auto cell_row: field)
 	{
 		for (auto cell: cell_row)
 		{
@@ -95,26 +106,30 @@ int	Field::determinant()
 
 void	Field::resetSubValues()
 {
-	for (auto cell_row: _field)
+	for (auto &cell_row: field)
 	{
-		for (auto cell: cell_row)
+		for (auto &cell: cell_row)
 		{
 			cell.resetSubValues();
+			cell.player_knows_value = false;
 		}
 	}
+
+	tryValue(0, 0, field[0][0].getValue());
+	tryValue(1, 1, field[1][1].getValue());
 }
 
 std::vector<Cell*>	Field::getAllCellsWhichValueIsKnownToPlayer()
 {
 	std::vector<Cell*> res;
 
-	for (std::size_t row = 0; row < _field.size(); row++)
+	for (std::size_t row = 0; row < field.size(); row++)
 	{
-		for (std::size_t col = 0; col < _field[0].size(); col++)
+		for (std::size_t col = 0; col < field[0].size(); col++)
 		{
-			if (_field[row][col].player_knows_value)
+			if (field[row][col].player_knows_value)
 			{
-				res.push_back(&_field[row][col]);
+				res.push_back(&field[row][col]);
 			}
 		}
 	}
@@ -124,7 +139,7 @@ std::vector<Cell*>	Field::getAllCellsWhichValueIsKnownToPlayer()
 
 bool		Field::isWin()
 {
-	for (auto cell_row: _field)
+	for (auto cell_row: field)
 	{
 		for (auto cell: cell_row)
 		{

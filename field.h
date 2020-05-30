@@ -31,7 +31,7 @@ private:
 	Field(const Field& root) = delete;
 	Field& operator=(const Field&) = delete;
 
-	std::array<std::array<Cell, 6>, 6> _field; // row:column
+	std::array<std::array<Cell, 6>, 6> field; // row:column
 };
 
 #endif // FIELD_H

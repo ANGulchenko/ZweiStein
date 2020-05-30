@@ -77,21 +77,13 @@ void	Hints::createFullSetOfHints()
 		if (apply_result)
 		{
 			hints.push_back(temp_hint);
-			if (temp_hint->type == HintType::ajacent)
-			{
-				std::cout << "HintType::ajacent ";
-			}
-			if (temp_hint->type == HintType::vertical)
-			{
-				std::cout << "HintType::vertical ";
-			}
-			std::cout << "1st val! row:" << temp_hint->first_cell->row << " value: "<< temp_hint->first_cell->value << std::endl;
-			std::cout << "2nd val! row:" << temp_hint->second_cell->row << " value: "<< temp_hint->second_cell->value << std::endl;
 
 			for (Hint* hint: hints)
 			{
 				hint->applyToField();
 			}
+
+//			i_face->printGame();
 		}else
 		{
 			delete temp_hint;
