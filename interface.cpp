@@ -42,7 +42,7 @@ std::string		Interface::printCell(int row, int col)
 	return subvalue_str;
 }
 
-std::string		Interface::printRow(int row)
+std::string		Interface::printCellRow(int row)
 {
 	std::string result;
 	result += std::to_string(row);
@@ -50,7 +50,7 @@ std::string		Interface::printRow(int row)
 	{
 		result += "│" + printCell(row, i);
 	}
-	result += "│\n";
+	result += "│";
 
 	return result;
 }
@@ -60,24 +60,25 @@ std::string		Interface::printRow(int row)
 void	Interface::printGame()
 {
 	std::cout << "\n";
-	std::cout << "────────────────┨ ZweiStein ┣────────────────\n";
-	std::cout << "\n";
-	std::cout << " │A     │ B    │ C    │ D    │ E    │ F    │ \n";
-	std::cout << "─┼──────┼──────┼──────┼──────┼──────┼──────┼─\n";
-	std::cout << printRow(0);
-	std::cout << "─┼──────┼──────┼──────┼──────┼──────┼──────┼─\n";
-	std::cout << printRow(1);
-	std::cout << "─┼──────┼──────┼──────┼──────┼──────┼──────┼─\n";
-	std::cout << printRow(2);
-	std::cout << "─┼──────┼──────┼──────┼──────┼──────┼──────┼─\n";
-	std::cout << printRow(3);
-	std::cout << "─┼──────┼──────┼──────┼──────┼──────┼──────┼─\n";
-	std::cout << printRow(4);
-	std::cout << "─┼──────┼──────┼──────┼──────┼──────┼──────┼─\n";
-	std::cout << printRow(5);
-	std::cout << "─┼──────┼──────┼──────┼──────┼──────┼──────┼─\n";
-	std::cout << "\n";
-	std::cout << "Enter command (claim:C[0-5][A-F][0-5]; switch:S[0-5][A-F][0-5]; hint:S[0-5][A-F]):";
+	std::cout << "┌────────────────┨ ZweiStein ┠────────────────────────────────────────────────────────┐\n";
+	std::cout << "│                                             ┌──────────────┨ Hints ┠───────────────┐│\n";
+	std::cout << "│ │A     │B     │C     │D     │E     │F     │ │     (You can hide unwanted hints     ││\n";
+	std::cout << "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │        with H[00-99] command)        ││\n";
+	std::cout << "│" << printCellRow(0)					    <<" │"<<printHintRow(0)              << "  ││\n";
+	std::cout << "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │"<<printHintRow(1)              << "  ││\n";
+	std::cout << "│" << printCellRow(1)						<<" │"<<printHintRow(2)              << "  ││\n";
+	std::cout << "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │"<<printHintRow(3)              << "  ││\n";
+	std::cout << "│" << printCellRow(2)						<<" │"<<printHintRow(4)              << "  ││\n";
+	std::cout << "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │"<<printHintRow(5)              << "  ││\n";
+	std::cout << "│" << printCellRow(3)						<<" │"<<printHintRow(6)              << "  ││\n";
+	std::cout << "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │"<<printHintRow(7)              << "  ││\n";
+	std::cout << "│" << printCellRow(4)						<<" │"<<printHintRow(8)              << "  ││\n";
+	std::cout << "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │"<<printHintRow(9)              << "  ││\n";
+	std::cout << "│" << printCellRow(5)						<<" │"<<printHintRow(10)             << "  ││\n";
+	std::cout << "│─┴──────┴──────┴──────┴──────┴──────┴──────┘ └──────────────────────────────────────┘│\n";
+	std::cout << "│ Commands MEMO: help, claim C[0-5][A-F][0-5], subvalue switch off S[0-5][A-F][0-5]   │\n";
+	std::cout << "└─────────────────────────────────────────────────────────────────────────────────────┘\n";
+	std::cout << ">";
 }
 
 void	Interface::printCommandError()
@@ -85,45 +86,56 @@ void	Interface::printCommandError()
 	std::cout << "Wrong command!\n";
 }
 
-void	Interface::printHints()
+std::string	Interface::printHint(size_t index)
 {
-	std::cout <<"\n\n";
 	Hints& hints = Hints::Instance();
-	int index = 0;
-	int hints_per_row = 10;
-	int index_in_row = 0;
-	for (Hint* hint : hints.hints)
+	if (hints.hints.size() > index)
 	{
+		std::string res = "";
+		if (index < 10) res += "0"; // All indexes should be two-digits
+		Hint* hint = hints.hints[index];
 		switch (hint->type)
 		{
 			case HintType::vertical:
 			{
-				std::cout << index << ")";
-				std::cout << _literals[hint->first_cell->row][hint->first_cell->getValue()];
-				std::cout << _hint_literals[HintType::vertical];
-				std::cout << _literals[hint->second_cell->row][hint->second_cell->getValue()];
-				std::cout << "  ";
+				res += std::to_string(index) + ")";
+				res += _literals[hint->first_cell->row][hint->first_cell->getValue()];
+				res += _hint_literals[HintType::vertical];
+				res += _literals[hint->second_cell->row][hint->second_cell->getValue()];
+				res += "   ";
 			}break;
 			case HintType::ajacent:
 			{
-				std::cout << index << ")";
-				std::cout << _literals[hint->first_cell->row][hint->first_cell->getValue()];
-				std::cout << _hint_literals[HintType::ajacent];
-				std::cout << _literals[hint->second_cell->row][hint->second_cell->getValue()];
-				std::cout << "  ";
+				res += std::to_string(index) + ")";
+				res += _literals[hint->first_cell->row][hint->first_cell->getValue()];
+				res += _hint_literals[HintType::ajacent];
+				res += _literals[hint->second_cell->row][hint->second_cell->getValue()];
+				res += "   ";
 			}break;
 
 			default: break;
 		}
 
-		index++;
-		index_in_row++;
-		if (index_in_row >= hints_per_row)
+		return res;
+
+	}
+	return "         ";
+}
+
+std::string	Interface::printHintRow(size_t row)
+{
+	// 4 hints per row.
+	std::string res;
+	//Hints& hints = Hints::Instance();
+	//if (hints.hints.size() > row * 4)
+	{
+		for (size_t index = row * 4; index < row * 4 + 4; index++)
 		{
-			index_in_row = 0;
-			std::cout << "\n";
+			res += printHint(index);
 		}
 	}
+	//std::cout << res;
+	return res;
 }
 
 void	Interface::printWin()

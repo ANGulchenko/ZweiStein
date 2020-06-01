@@ -35,7 +35,6 @@ void	Game::start()
 	while (!field.isWin())
 	{
 		interface->printGame();
-		interface->printHints();
 		std::cin >> command_str;
 		command->parse(command_str);
 
