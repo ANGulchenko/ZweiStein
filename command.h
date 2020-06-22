@@ -1,19 +1,16 @@
 ﻿#ifndef COMMAND_H
 #define COMMAND_H
 
-#include <string>
-
-enum class CommandType { error, claim, switch_subvalue, switch_hint};
+enum class CommandType { error, quit,
+						 move_up, move_down, move_left, move_right,
+						 claim, dismiss};
 
 class Command
 {
 public:
 	Command();
-	void	parse(std::string);
+	void	parse(int button);
 	CommandType type;
-	int			row;
-	int			column;
-	int			value;
 };
 
 #endif // COMMAND_H

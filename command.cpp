@@ -1,111 +1,52 @@
-﻿#include "command.h"
+﻿#include <ncurses.h>
+
+#include "command.h"
 
 Command::Command()
 {
 
 }
 
-void	Command::parse(std::string command)
+void	Command::parse(int button)
 {
-	// claim:C[0-5][A-F][0-5]
-	// switch:S[0-5][A-F][0-5]
-	// hint:H[0-5][0-100])
-
-
-	if (command.compare(0, 1, "C") == 0)
+	switch (button)
 	{
-		type = CommandType::claim;
-	}else
-	if (command.compare(0, 1, "S") == 0)
-	{
-	type = CommandType::switch_subvalue;
-	}else
-	if (command.compare(0, 1, "H") == 0)
-	{
-		type = CommandType::switch_hint;
-	}else
-	{
-		type = CommandType::error;
-		return;
-	}
-
-	try
-	{
-		row = std::stoi(command.substr(1, 1));
-	}
-	catch (...)
-	{
-		type = CommandType::error;
-		return;
-	}
-
-	if (type == CommandType::claim || type == CommandType::switch_subvalue)
-	{
-		// Third char is column coordinate
-		char col = command.substr(2, 1)[0];
-		switch (col)
+		case 'z':
 		{
-			case 'A':
-			case 'a':
-			{
-				column = 0;
-			}break;
-			case 'B':
-			case 'b':
-			{
-				column = 1;
-			}break;
-			case 'C':
-			case 'c':
-			{
-				column = 2;
-			}break;
-			case 'D':
-			case 'd':
-			{
-				column = 3;
-			}break;
-			case 'E':
-			case 'e':
-			{
-				column = 4;
-			}break;
-			case 'F':
-			case 'f':
-			{
-				column = 5;
-			}break;
-			default:
-			{
-				type = CommandType::error;
-				return;
-			}
-		}
+			type = CommandType::quit;
+		}break;
 
-		// All remaining chars are "value"
-		try
+		case 'w':
+		case KEY_UP:
 		{
-			value = std::stoi(command.substr(3));
-		}
-		catch (...)
+			type = CommandType::move_up;
+		}break;
+		case 's':
+		case KEY_DOWN:
 		{
-			type = CommandType::error;
-			return;
-		}
+			type = CommandType::move_down;
+		}break;
+		case 'a':
+		case KEY_LEFT:
+		{
+			type = CommandType::move_left;
+		}break;
+		case 'd':
+		case KEY_RIGHT:
+		{
+			type = CommandType::move_right;
+		}break;
 
-	}else
-	{
-		// All chars until the end of command are hint number
-		try
+		case 'q':
 		{
-			value = std::stoi(command.substr(2));
-		}
-		catch (...)
+			type = CommandType::claim;
+		}break;
+		case 'e':
 		{
-			type = CommandType::error;
-			return;
-		}
-		return;
+			type = CommandType::dismiss;
+		}break;
+
+
 	}
 
 }

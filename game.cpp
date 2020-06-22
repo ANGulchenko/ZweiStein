@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include "game.h"
+#include <curses.h>
 
 Game::Game()
 	: field (Field::Instance())
@@ -31,14 +32,62 @@ void	Game::start()
 {
 	//main cycle: print game| read and parse commands | use commands
 	std::string command_str;
-
+	int ch;
+	//timeout(-1);
+	interface->printGame();
 	while (!field.isWin())
 	{
 		interface->printGame();
-		std::cin >> command_str;
-		command->parse(command_str);
+		ch = getch();
+		command->parse(ch);
 
-		if (command->type == CommandType::error)
+		switch (command->type)
+		{
+			case CommandType::quit:
+			{
+				exit(0);
+			}break;
+			case CommandType::move_up:
+			{
+				interface->cursor.moveUp();
+			}break;
+			case CommandType::move_down:
+			{
+				interface->cursor.moveDown();
+			}break;
+			case CommandType::move_left:
+			{
+				interface->cursor.moveLeft();
+			}break;
+			case CommandType::move_right:
+			{
+				interface->cursor.moveRight();
+			}break;
+			case CommandType::claim:
+			{
+				bool res = field.tryValue(interface->cursor.row, interface->cursor.col, interface->cursor.subvalue);
+				if (!res)
+				{
+					interface->printLose();
+					exit(0);
+				}
+			}break;
+			case CommandType::dismiss:
+			{
+				if (interface->cursor.zone == CursorZone::field)
+				{
+					bool res = field.switchOffSubValue(interface->cursor.row, interface->cursor.col, interface->cursor.subvalue);
+					if (!res)
+					{
+						interface->printLose();
+						exit(0);
+					}
+				}
+			}break;
+
+		}
+
+/*		if (command->type == CommandType::error)
 		{
 			interface->printCommandError();
 		}else
@@ -60,6 +109,8 @@ void	Game::start()
 				exit(0);
 			}
 		}
+
+		*/
 	}
 
 	interface->printWin();
