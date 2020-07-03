@@ -154,7 +154,7 @@ bool HintAjacent::applyToField()
 	// the basic cell is near the border, so it has only 1
 	// suspect. And we know its value.
 
-	if (basic_col == 0)
+	/*if (basic_col == 0)
 	{
 		field.tryValue(row, 1, val);
 		if (field.determinant() == old_determinant) return false;
@@ -187,14 +187,14 @@ bool HintAjacent::applyToField()
 			field.tryValue(row, basic_col - 1, val);
 			if (field.determinant() == old_determinant) return false;
 		}
-	}
+	}*/
 
 	// At this moment we sure that we cannot guess VALUE so
 	// we just must switch off VAL in all cells except adjacent.
-	for (int c = 0; c < 6; c++)
+	for (size_t c = 0; c < 6; c++)
 	{
-		Cell* cell = field.getCell(row, c);
-		if ((cell->col == (basic_col - 1)) || (cell->col == (basic_col + 1)))
+		//Cell* cell = field.getCell(row, c);
+		if ((c == (basic_col - 1)) || (c == (basic_col + 1)))
 		{
 			// That are cell which can have VAl as val
 			// so we do nothing with them
@@ -205,7 +205,12 @@ bool HintAjacent::applyToField()
 		}
 	}
 
-	if (field.determinant() == old_determinant) return false;
+	int new_determinant = field.determinant();
+
+	if (new_determinant == old_determinant)
+	{
+		return false;
+	}
 
 	return true;
 }

@@ -42,6 +42,10 @@ Field::Field()
 bool	Field::tryValue(int row, int column, int val)
 {
 	Cell* test_cell = getCell(row, column);
+	if (test_cell->player_knows_value == true)
+	{
+		return true;
+	}
 
 	if (test_cell->getValue() == val)
 	{
@@ -79,7 +83,27 @@ bool	Field::switchOffSubValue(int row, int column, int subvalue_index)
 	// Maybe after switching off this subvalue we already know the real value?
 	if (test_cell->countSubValues() <= 1)
 	{
-		tryValue(row, column, subvalue_index);
+		tryValue(row, column, test_cell->getIndexOfFirstTrueSubvalue());
+	}
+
+	// After switching off subvalue here there is a chance that
+	// only one such subvalue left in the whole row. Obviously
+	// we can "try" it.
+	int counter = 0;
+	size_t good_c = 0;
+	for (size_t c = 0; c < 6; c++)
+	{
+		Cell* t_cell = getCell(row, c);
+		if (t_cell->subvalues[subvalue_index] == true)
+		{
+			counter++;
+			good_c = c;
+		}
+	}
+
+	if (counter == 1)
+	{
+		tryValue(row, good_c, subvalue_index);
 	}
 
 	return true;

@@ -9,6 +9,7 @@ public:
 	Cell();
 	void	resetSubValues();
 	int		countSubValues();
+	size_t	getIndexOfFirstTrueSubvalue();
 	int		getValue();
 	void	setValue(int val);
 

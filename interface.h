@@ -14,14 +14,19 @@ public:
 	void moveLeft();
 	void moveUp();
 	void moveDown();
+	size_t  getHintNo();
 
 	void draw();
 
 	size_t		row;
 	size_t		col;
 	size_t		subvalue;
-	size_t		hint;
+
 	CursorZone	zone;
+private:
+	size_t		hintNo;
+	size_t		hintRow;
+	size_t		hintCol;
 };
 
 class Interface
@@ -32,6 +37,7 @@ public:
 	std::string	printCell(int row, int col);
 	void		printAllCells();
 	std::string	printHint(size_t index);
+	void		changeVisibilityOfHint(size_t index);
 	void		printAllHints();
 	void		printCommandError();
 	void		printWin();

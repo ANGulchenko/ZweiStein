@@ -31,7 +31,7 @@ void	Game::initPuzzle()
 void	Game::start()
 {
 	//main cycle: print game| read and parse commands | use commands
-	std::string command_str;
+	//std::string command_str;
 	int ch;
 	//timeout(-1);
 	interface->printGame();
@@ -82,6 +82,11 @@ void	Game::start()
 						interface->printLose();
 						exit(0);
 					}
+				}else
+				if (interface->cursor.zone == CursorZone::hints)
+				{
+					size_t index = interface->cursor.getHintNo();
+					interface->changeVisibilityOfHint(index);
 				}
 			}break;
 
