@@ -38,6 +38,7 @@ public:
 	void		printAllCells();
 	std::string	printHint(size_t index);
 	void		changeVisibilityOfHint(size_t index);
+	void		hideUselessHints();
 	void		printAllHints();
 	void		printCommandError();
 	void		printWin();

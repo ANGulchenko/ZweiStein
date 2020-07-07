@@ -1,4 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.5)
+
+#set(CMAKE_CXX_COMPILER "g++")
+
 project(ZweiStein LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

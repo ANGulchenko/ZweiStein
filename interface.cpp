@@ -82,6 +82,7 @@ void	Interface::printGame()
 	mvprintw(17, 0, "│ Commands MEMO: z - exit, wasd - move, q - claim, e - dismiss                       │");
 	mvprintw(18, 0, "└────────────────────────────────────────────────────────────────────────────────────┘");
 	printAllCells();
+	hideUselessHints();
 	printAllHints();
 	cursor.draw();
 }
@@ -99,6 +100,22 @@ void	Interface::changeVisibilityOfHint(size_t index)
 	}
 }
 
+void	Interface::hideUselessHints()
+{
+	Hints& hints = Hints::Instance();
+	for (size_t hintNo = 0; hintNo < hints.hints.size(); hintNo++)
+	{
+		Hint* hint = hints.hints[hintNo];
+		if ((hint->first_cell == nullptr || hint->first_cell->player_knows_value) &&
+			(hint->second_cell == nullptr || hint->second_cell->player_knows_value) &&
+			(hint->third_cell == nullptr || hint->third_cell->player_knows_value)
+			)
+		{
+			_hints_visibility[hintNo] = false;
+		}
+	}
+}
+
 std::string	Interface::printHint(size_t index)
 {
 	Hints& hints = Hints::Instance();
@@ -106,6 +123,7 @@ std::string	Interface::printHint(size_t index)
 	{
 		std::string res = " ";
 		Hint* hint = hints.hints[index];
+
 		switch (hint->type)
 		{
 			case HintType::vertical:
