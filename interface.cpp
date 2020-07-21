@@ -5,6 +5,7 @@
 
 Interface::Interface(Field* field)
 	: _field (field)
+	, _hintAutoHide(true)
 {
 	_literals[0] = {"1", "2", "3", "4", "5", "6"};
 	_literals[1] = {"A", "B", "C", "D", "E", "F"};
@@ -80,7 +81,7 @@ void	Interface::printGame()
 	mvprintw(14, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
 	mvprintw(15, 0, "│6│      │      │      │      │      │      │ │                                     ││");
 	mvprintw(16, 0, "│─┴──────┴──────┴──────┴──────┴──────┴──────┘ └─────────────────────────────────────┘│");
-	mvprintw(17, 0, "│ Commands MEMO: z - exit, wasd - move, q - claim, e - dismiss                       │");
+	mvprintw(17, 0, "│ Commands: (z)exit, (wasd)move, (q)claim, (e)dismiss, (p)help    (h)HintAutoHide:NA │");
 	mvprintw(18, 0, "└────────────────────────────────────────────────────────────────────────────────────┘");
 	printAllCells();
 	hideUselessHints();
@@ -101,8 +102,21 @@ void	Interface::changeVisibilityOfHint(size_t index)
 	}
 }
 
+void	Interface::switchHintAutoHide()
+{
+	_hintAutoHide = !_hintAutoHide;
+}
+
 void	Interface::hideUselessHints()
 {
+	if (_hintAutoHide == false)
+	{
+		mvprintw(17, 82, "OFF");
+		return;
+	}
+
+	mvprintw(17, 82, "ON");
+
 	Hints& hints = Hints::Instance();
 	for (size_t hintNo = 0; hintNo < hints.hints.size(); hintNo++)
 	{
@@ -200,6 +214,29 @@ void	Interface::printLose()
 	mvprintw( 5 + 7, 27, "│    Don't do that again    │");
 	mvprintw( 6 + 7, 27, "│                           │");
 	mvprintw( 7 + 7, 27, "└───────────────────────────┘");
+}
+
+void	Interface::printHelp()
+{
+	clear();
+	mvprintw( 1, 0, "┌────────────────────────────┨ ZweiStein Help and Rules┠─────────────────────────────┐");
+	mvprintw( 2, 0, "│ The game goal is to open all cards in square of 6x6 cards. Every row of square     │");
+	mvprintw( 3, 0, "│contains cards of one type only. For example, first row contains arabic digits,     │");
+	mvprintw( 4, 0, "│second - letters, etc. Use logic and open cards with method of exclusion. If card   │");
+	mvprintw( 5, 0, "│doesn't opened, cell contains every possible cards. For example, │AB DEF│ means that│");
+	mvprintw( 6, 0, "│this cell may contain every latin letter except 'C' (because card with 'C' image is │");
+	mvprintw( 7, 0, "│absent. To open card use 'claim' button and to exclude card use 'dissmiss' key.     │");
+	mvprintw( 8, 0, "│ Use tips to solve this puzzle. There are 4 types of hints:                         │");
+	mvprintw( 9, 0, "│1) Vertical hint. For example, 6⇕+. It means that 6 and + are located in the same   │");
+	mvprintw(10, 0, "│column.                                                                             │");
+	mvprintw(11, 0, "│2) Ajacent hint. Looks like ÷⇔4. It states that ÷ and 4 are in the ajacent columns  │");
+	mvprintw(12, 0, "│but it tells nothing about which letter is on the left side and which is on the     │");
+	mvprintw(13, 0, "│right.                                                                              │");
+	mvprintw(14, 0, "│3) LeftRight hint. 3⋯√. It says that the 3 is on the left side of another but no    │");
+	mvprintw(15, 0, "│information about the distance between those cards.                                 │");
+	mvprintw(16, 0, "│4) ₴⇔⚁⇔3. ⚁ is in the middle and others are at the left and right ajacent columns.  │");
+	mvprintw(17, 0, "│No information about about which is on the left and which is on the right, though.  │");
+	mvprintw(18, 0, "└<Press any button to return>────────────────────────────────────────────────────────┘");
 }
 
 /////////////////////////////////////////////////////////////////////

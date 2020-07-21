@@ -3,6 +3,7 @@
 #include "command.h"
 
 Command::Command()
+	: type (CommandType::error)
 {
 
 }
@@ -44,6 +45,14 @@ void	Command::parse(int button)
 		case 'e':
 		{
 			type = CommandType::dismiss;
+		}break;
+		case 'h':
+		{
+			type = CommandType::toggle_autohide;
+		}break;
+		case 'p':
+		{
+			type = CommandType::help;
 		}break;
 
 

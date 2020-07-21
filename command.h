@@ -3,7 +3,9 @@
 
 enum class CommandType { error, quit,
 						 move_up, move_down, move_left, move_right,
-						 claim, dismiss};
+						 claim, dismiss,
+						 toggle_autohide,
+						 help};
 
 class Command
 {

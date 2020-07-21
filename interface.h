@@ -43,6 +43,8 @@ public:
 	void		printCommandError();
 	void		printWin();
 	void		printLose();
+	void		printHelp();
+	void		switchHintAutoHide();
 
 	Cursor cursor;
 
@@ -51,6 +53,7 @@ private:
 	std::array<std::array<std::string, 6>, 6> _literals;
 	std::map<HintType, std::string> _hint_literals;
 	std::vector<bool>_hints_visibility;
+	bool _hintAutoHide;
 
 };
 

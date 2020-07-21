@@ -88,6 +88,15 @@ void	Game::start()
 					interface->changeVisibilityOfHint(index);
 				}
 			}break;
+			case CommandType::help:
+			{
+				interface->printHelp();
+				getch();
+			}break;
+			case CommandType::toggle_autohide:
+			{
+				interface->switchHintAutoHide();
+			}break;
 		}
 
 		if (field.isWin())
