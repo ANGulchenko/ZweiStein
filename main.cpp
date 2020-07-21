@@ -18,6 +18,9 @@ int main()
 	game.initPuzzle();
 	game.start();
 
+	curs_set(1);
+	echo();
+
 	delwin(mainwin);
 	endwin();
 	refresh();

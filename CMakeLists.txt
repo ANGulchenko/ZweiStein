@@ -15,6 +15,10 @@ ADD_LIBRARY(MainProgram
     interface.cpp interface.h
     command.cpp command.h
     hint.cpp hint.h
+    hintvertical.cpp hintvertical.h
+    hintajacent.cpp hintajacent.h
+    hintleftright.cpp hintleftright.h
+    hintthreeajacent.cpp hintthreeajacent.h
     hints.cpp hints.h
 )
 

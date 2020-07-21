@@ -8,7 +8,7 @@
 #include "field.h"
 
 
-enum class HintType {empty, vertical, ajacent};
+enum class HintType {empty, vertical, ajacent, leftRight, threeAjacent};
 
 class Hint
 {
@@ -24,24 +24,6 @@ public:
 	Cell* third_cell = nullptr;
 
 	std::random_device random_device;
-};
-
-class HintVertical: public Hint
-{
-public:
-	HintVertical();
-	~HintVertical();
-
-	bool	applyToField();
-};
-
-class HintAjacent: public Hint
-{
-public:
-	HintAjacent();
-	~HintAjacent();
-
-	bool	applyToField();
 };
 
 #endif // HINT_H

@@ -8,6 +8,7 @@
 #include "hints.h"
 #include "command.h"
 
+enum class GameStatus { gameContinues, gameWon, gameLost};
 
 class Game
 {
@@ -22,6 +23,7 @@ private:
 	Hints&		hints;
 	Interface*	interface;
 	Command*	command;
+	GameStatus	gameStatus;
 };
 
 #endif // GAME_H

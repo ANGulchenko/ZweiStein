@@ -1,7 +1,7 @@
 ﻿#ifndef CELL_H
 #define CELL_H
 
-#include<cstddef>
+#include <cstddef>
 #include <array>
 
 class Cell

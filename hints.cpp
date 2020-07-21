@@ -2,11 +2,14 @@
 #include <iostream>
 
 Hints::Hints()
-{
-	hintProbabilities = {
+	: hintProbabilities {
 							{HintType::vertical, 20},
-							{HintType::ajacent, 80},
-						};
+							{HintType::ajacent, 40},
+							{HintType::leftRight, 20},
+							{HintType::threeAjacent, 120}
+						}
+{
+
 
 	int limit = 0;
 	for (auto i = hintProbabilities.begin(); i != hintProbabilities.end(); i++)
@@ -48,7 +51,6 @@ Hint*	Hints::getNewHint(HintType hintType)
 
 	switch (type)
 	{
-
 		case HintType::ajacent :
 		{
 			return new HintAjacent();
@@ -56,6 +58,14 @@ Hint*	Hints::getNewHint(HintType hintType)
 		case HintType::vertical :
 		{
 			return new HintVertical();
+		} break;
+		case HintType::leftRight :
+		{
+			return new HintLeftRight();
+		} break;
+		case HintType::threeAjacent :
+		{
+			return new HintThreeAjacent();
 		} break;
 		default:
 		{
@@ -70,9 +80,22 @@ void	Hints::createFullSetOfHints()
 {
 	Field& field = Field::Instance();
 
+	Hint* temp_hint = nullptr;
+
 	while (!field.isWin())
 	{
-		Hint* temp_hint = getNewHint(HintType::empty);
+		temp_hint = nullptr;
+		while (temp_hint == nullptr)
+		{
+			temp_hint = getNewHint(HintType::empty);
+			if (temp_hint == nullptr || temp_hint->type == HintType::empty)
+			{
+				delete temp_hint;
+				temp_hint = nullptr;
+			}
+		}
+
+
 		bool apply_result = temp_hint->applyToField();
 		if (apply_result)
 		{

@@ -15,6 +15,7 @@ Interface::Interface(Field* field)
 
 	_hint_literals[HintType::vertical] = "⇕";
 	_hint_literals[HintType::ajacent] = "⇔";
+	_hint_literals[HintType::leftRight] = "⋯";
 
 	//_hints_visibility;
 	_hints_visibility.resize(100, true);
@@ -140,6 +141,21 @@ std::string	Interface::printHint(size_t index)
 				res += _literals[hint->second_cell->row][hint->second_cell->getValue()];
 				res += "  ";
 			}break;
+			case HintType::leftRight:
+			{
+				res += _literals[hint->first_cell->row][hint->first_cell->getValue()];
+				res += _hint_literals[HintType::leftRight];
+				res += _literals[hint->second_cell->row][hint->second_cell->getValue()];
+				res += "  ";
+			}break;
+			case HintType::threeAjacent:
+			{
+				res += _literals[hint->first_cell->row][hint->first_cell->getValue()];
+				res += _hint_literals[HintType::ajacent];
+				res += _literals[hint->second_cell->row][hint->second_cell->getValue()];
+				res += _hint_literals[HintType::ajacent];
+				res += _literals[hint->third_cell->row][hint->third_cell->getValue()];
+			}break;
 
 			default: break;
 		}
@@ -168,12 +184,22 @@ void	Interface::printAllHints()
 
 void	Interface::printWin()
 {
-	std::cout <<"\nWIN!\n";
+	mvprintw( 1 + 7, 27, "┌─────────┨  Win  ┠─────────┐");
+	mvprintw( 3 + 7, 27, "│                           │");
+	mvprintw( 4 + 7, 27, "│       Not a big deal      │");
+	mvprintw( 5 + 7, 27, "│  This game is too simple  │");
+	mvprintw( 6 + 7, 27, "│                           │");
+	mvprintw( 7 + 7, 27, "└───────────────────────────┘");
 }
 
 void	Interface::printLose()
 {
-	std::cout <<"\nLOSE!\n";
+	mvprintw( 1 + 7, 27, "┌─────────┨ Loser ┠─────────┐");
+	mvprintw( 3 + 7, 27, "│                           │");
+	mvprintw( 4 + 7, 27, "│       You have lost       │");
+	mvprintw( 5 + 7, 27, "│    Don't do that again    │");
+	mvprintw( 6 + 7, 27, "│                           │");
+	mvprintw( 7 + 7, 27, "└───────────────────────────┘");
 }
 
 /////////////////////////////////////////////////////////////////////

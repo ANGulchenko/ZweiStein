@@ -5,6 +5,7 @@
 Game::Game()
 	: field (Field::Instance())
 	, hints (Hints::Instance())
+	, gameStatus(GameStatus::gameContinues)
 {
 //	field.fillField();
 
@@ -35,7 +36,7 @@ void	Game::start()
 	int ch;
 	//timeout(-1);
 	interface->printGame();
-	while (!field.isWin())
+	while (gameStatus == GameStatus::gameContinues)
 	{
 		interface->printGame();
 		ch = getch();
@@ -45,7 +46,7 @@ void	Game::start()
 		{
 			case CommandType::quit:
 			{
-				exit(0);
+				gameStatus = GameStatus::gameLost;
 			}break;
 			case CommandType::move_up:
 			{
@@ -68,8 +69,7 @@ void	Game::start()
 				bool res = field.tryValue(interface->cursor.row, interface->cursor.col, interface->cursor.subvalue);
 				if (!res)
 				{
-					interface->printLose();
-					exit(0);
+					gameStatus = GameStatus::gameLost;
 				}
 			}break;
 			case CommandType::dismiss:
@@ -79,8 +79,7 @@ void	Game::start()
 					bool res = field.switchOffSubValue(interface->cursor.row, interface->cursor.col, interface->cursor.subvalue);
 					if (!res)
 					{
-						interface->printLose();
-						exit(0);
+						gameStatus = GameStatus::gameLost;
 					}
 				}else
 				if (interface->cursor.zone == CursorZone::hints)
@@ -89,35 +88,30 @@ void	Game::start()
 					interface->changeVisibilityOfHint(index);
 				}
 			}break;
-
 		}
 
-/*		if (command->type == CommandType::error)
+		if (field.isWin())
 		{
-			interface->printCommandError();
-		}else
-		if (command->type == CommandType::switch_subvalue)
-		{
-			bool res = field.switchOffSubValue(command->row, command->column, command->value);
-			if (!res)
-			{
-				interface->printLose();
-				exit(0);
-			}
-		}else
-		if (command->type == CommandType::claim)
-		{
-			bool res = field.tryValue(command->row, command->column, command->value);
-			if (!res)
-			{
-				interface->printLose();
-				exit(0);
-			}
+			gameStatus = GameStatus::gameWon;
 		}
-
-		*/
 	}
 
-	interface->printWin();
+	switch (gameStatus)
+	{
+		case GameStatus::gameContinues:
+		{
+			// Impossible situation
+		}break;
+		case GameStatus::gameWon:
+		{
+			interface->printWin();
+			getch();
+		}break;
+		case GameStatus::gameLost:
+		{
+			interface->printLose();
+			getch();
+		}break;
+	}
 
 }

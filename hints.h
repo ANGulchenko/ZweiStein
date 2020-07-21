@@ -6,6 +6,10 @@
 #include <random>
 
 #include "hint.h"
+#include "hintvertical.h"
+#include "hintajacent.h"
+#include "hintleftright.h"
+#include "hintthreeajacent.h"
 #include "interface.h"
 
 class Hints
