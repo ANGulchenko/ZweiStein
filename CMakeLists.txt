@@ -24,4 +24,5 @@ ADD_LIBRARY(MainProgram
 
 add_executable(ZweiStein main.cpp)
 target_link_libraries(ZweiStein MainProgram)
+target_link_libraries(MainProgram -ltinfo)
 target_link_libraries(MainProgram -lncursesw)
