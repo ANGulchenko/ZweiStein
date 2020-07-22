@@ -33,6 +33,9 @@ private:
 
 		std::map<HintType, int> hintProbabilities;
 		std::map<int, HintType> hintProbabilityDiapasones;
+
+		std::random_device randomDevice;
+		std::mt19937 veryRandomDevice;
 };
 
 #endif // HINTS_H

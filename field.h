@@ -3,6 +3,7 @@
 
 #include <array>
 #include <vector>
+#include <random>
 
 #include "cell.h"
 
@@ -32,6 +33,11 @@ private:
 	Field& operator=(const Field&) = delete;
 
 	std::array<std::array<Cell, 6>, 6> field; // row:column
+
+	std::vector<std::pair<int, int>> aFewAlreadyKnownCellsToBeginALevelWith;
+
+	std::random_device randomDevice;
+	std::mt19937 veryrandomDevice;
 };
 
 #endif // FIELD_H

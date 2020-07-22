@@ -1,13 +1,11 @@
-﻿#include <random>
-#include <algorithm>
+﻿#include <algorithm>
 #include <iostream>
 
 #include "field.h"
 
 Field::Field()
+	: veryrandomDevice (randomDevice())
 {
-	std::random_device rd;
-	std::mt19937 g(rd());
 	for (auto &row : field)
 	{
 		int val = 0;
@@ -20,7 +18,7 @@ Field::Field()
 
 	for (auto &row : field)
 	{
-		std::shuffle(row.begin(), row.end(), g);
+		std::shuffle(row.begin(), row.end(), veryrandomDevice);
 	}
 
 	for (std::size_t row = 0; row < field.size(); row++)
@@ -33,9 +31,20 @@ Field::Field()
 	}
 
 	// We need a few Cells, which are known to player, to start with.
-	tryValue(0, 0, field[0][0].getValue());
-	tryValue(1, 1, field[1][1].getValue());
+	std::uniform_int_distribution<int> dist(0, 5);
 
+	int r1 = dist(veryrandomDevice);
+	int c1 = dist(veryrandomDevice);
+	int r2 = dist(veryrandomDevice);
+	int c2 = dist(veryrandomDevice);
+
+	aFewAlreadyKnownCellsToBeginALevelWith.push_back(std::make_pair(r1, c1));
+	aFewAlreadyKnownCellsToBeginALevelWith.push_back(std::make_pair(r2, c2));
+
+	for (auto cell_coord : aFewAlreadyKnownCellsToBeginALevelWith)
+	{
+		tryValue(cell_coord.first, cell_coord.second, field[cell_coord.first][cell_coord.second].getValue());
+	}
 }
 
 
@@ -139,8 +148,10 @@ void	Field::resetSubValues()
 		}
 	}
 
-	tryValue(0, 0, field[0][0].getValue());
-	tryValue(1, 1, field[1][1].getValue());
+	for (auto cell_coord : aFewAlreadyKnownCellsToBeginALevelWith)
+	{
+		tryValue(cell_coord.first, cell_coord.second, field[cell_coord.first][cell_coord.second].getValue());
+	}
 }
 
 std::vector<Cell*>	Field::getAllCellsWhichValueIsKnownToPlayer()

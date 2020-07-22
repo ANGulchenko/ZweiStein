@@ -8,6 +8,7 @@ Hints::Hints()
 							{HintType::leftRight, 20},
 							{HintType::threeAjacent, 120}
 						}
+	, veryRandomDevice (randomDevice())
 {
 
 
@@ -32,9 +33,6 @@ Hint*	Hints::getNewHint(HintType hintType)
 		type = hintType;
 	}else
 	{
-		std::random_device randomDevice;
-		std::mt19937 veryRandomDevice(randomDevice());
-
 		int probabilityDiapasoneUpperLimit = (--hintProbabilityDiapasones.end())->first;
 		std::uniform_int_distribution<int> dist(0, probabilityDiapasoneUpperLimit);
 
@@ -112,4 +110,6 @@ void	Hints::createFullSetOfHints()
 			delete temp_hint;
 		}
 	}
+
+	std::shuffle(hints.begin(), hints.end(), veryRandomDevice);
 }
