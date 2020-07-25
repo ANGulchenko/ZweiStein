@@ -9,7 +9,7 @@ Game::Game()
 {
 //	field.fillField();
 
-	interface = new Interface(&field);
+	interface = new Interface();
 
 	command = new Command();
 }

@@ -3,27 +3,9 @@
 
 int main()
 {
-	WINDOW * mainwin;
-	setlocale(LC_ALL, "");
-
-	if ( (mainwin = initscr()) == NULL )
-	{
-		fprintf(stderr, "Error initializing ncurses.\n");
-		exit(EXIT_FAILURE);
-	}
-	noecho();
-	curs_set(0);
-
-	Game game;
-	game.initPuzzle();
-	game.start();
-
-	curs_set(1);
-	echo();
-
-	delwin(mainwin);
-	endwin();
-	refresh();
-
+	Game* game = new Game();
+	game->initPuzzle();
+	game->start();
+	delete game;
 	return EXIT_SUCCESS;
 }

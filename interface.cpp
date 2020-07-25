@@ -1,11 +1,11 @@
 ﻿#include <iostream>
 
 #include "interface.h"
-#include <curses.h>
 
-Interface::Interface(Field* field)
-	: _field (field)
+Interface::Interface()
+	: _field (Field::Instance())
 	, _hintAutoHide(true)
+	, cursor(this)
 {
 	_literals[0] = {"1", "2", "3", "4", "5", "6"};
 	_literals[1] = {"A", "B", "C", "D", "E", "F"};
@@ -20,11 +20,37 @@ Interface::Interface(Field* field)
 
 	//_hints_visibility;
 	_hints_visibility.resize(100, true);
+
+	setlocale(LC_ALL, "");
+
+	mainwin = initscr();
+	if (mainwin == NULL )
+	{
+		fprintf(stderr, "Error initializing ncurses.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	//int res = resizeterm(interfaceYSize+10, interfaceXSize+10);
+	//wrefresh(mainwin);
+
+	noecho();
+	curs_set(0);
+
+}
+
+Interface::~Interface()
+{
+	curs_set(1);
+	echo();
+
+	delwin(mainwin);
+	endwin();
+	refresh();
 }
 
 std::string		Interface::printCell(int row, int col)
 {
-	Cell* cell = _field->getCell(row, col);
+	Cell* cell = _field.getCell(row, col);
 	std::string subvalue_str;
 
 	if (cell->player_knows_value)
@@ -55,7 +81,7 @@ void		Interface::printAllCells()
 		for (int c = 0; c < 6; c++)
 		{
 			std::string cell = printCell(r, c);
-			mvprintw( 5+r*2, 3+c*7, cell.c_str());
+			print( 5+r*2, 3+c*7, cell.c_str());
 		}
 	}
 }
@@ -65,24 +91,29 @@ void		Interface::printAllCells()
 void	Interface::printGame()
 {
 	clear();
-	mvprintw( 1, 0, "┌────────────────┨ ZweiStein ┠───────────────────────────────────────────────────────┐");
-	mvprintw( 2, 0, "│                                             ┌──────────────┨ Hints ┠──────────────┐│");
-	mvprintw( 3, 0, "│ │A     │B     │C     │D     │E     │F     │ │     You can hide unwanted hints     ││");
-	mvprintw( 4, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │       with  'dismiss' command       ││");
-	mvprintw( 5, 0, "│1│      │      │      │      │      │      │ │                                     ││");
-	mvprintw( 6, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	mvprintw( 7, 0, "│2│      │      │      │      │      │      │ │                                     ││");
-	mvprintw( 8, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	mvprintw( 9, 0, "│3│      │      │      │      │      │      │ │                                     ││");
-	mvprintw(10, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	mvprintw(11, 0, "│4│      │      │      │      │      │      │ │                                     ││");
-	mvprintw(12, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	mvprintw(13, 0, "│5│      │      │      │      │      │      │ │                                     ││");
-	mvprintw(14, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	mvprintw(15, 0, "│6│      │      │      │      │      │      │ │                                     ││");
-	mvprintw(16, 0, "│─┴──────┴──────┴──────┴──────┴──────┴──────┘ └─────────────────────────────────────┘│");
-	mvprintw(17, 0, "│ Commands: (z)exit, (wasd)move, (q)claim, (e)dismiss, (p)help    (h)HintAutoHide:NA │");
-	mvprintw(18, 0, "└────────────────────────────────────────────────────────────────────────────────────┘");
+	if (!isTerminalHasEnoughSize())
+	{
+		printSmallTerminal();
+		return;
+	}
+	print( 1, 0, "┌────────────────┨ ZweiStein ┠───────────────────────────────────────────────────────┐");
+	print( 2, 0, "│                                             ┌──────────────┨ Hints ┠──────────────┐│");
+	print( 3, 0, "│ │A     │B     │C     │D     │E     │F     │ │     You can hide unwanted hints     ││");
+	print( 4, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │       with  'dismiss' command       ││");
+	print( 5, 0, "│1│      │      │      │      │      │      │ │                                     ││");
+	print( 6, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
+	print( 7, 0, "│2│      │      │      │      │      │      │ │                                     ││");
+	print( 8, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
+	print( 9, 0, "│3│      │      │      │      │      │      │ │                                     ││");
+	print(10, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
+	print(11, 0, "│4│      │      │      │      │      │      │ │                                     ││");
+	print(12, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
+	print(13, 0, "│5│      │      │      │      │      │      │ │                                     ││");
+	print(14, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
+	print(15, 0, "│6│      │      │      │      │      │      │ │                                     ││");
+	print(16, 0, "│─┴──────┴──────┴──────┴──────┴──────┴──────┘ └─────────────────────────────────────┘│");
+	print(17, 0, "│ Commands: (z)exit, (wasd)move, (q)claim, (e)dismiss, (p)help    (h)HintAutoHide:NA │");
+	print(18, 0, "└────────────────────────────────────────────────────────────────────────────────────┘");
 	printAllCells();
 	hideUselessHints();
 	printAllHints();
@@ -111,11 +142,11 @@ void	Interface::hideUselessHints()
 {
 	if (_hintAutoHide == false)
 	{
-		mvprintw(17, 82, "OFF");
+		print(17, 82, "OFF");
 		return;
 	}
 
-	mvprintw(17, 82, "ON");
+	print(17, 82, "ON");
 
 	Hints& hints = Hints::Instance();
 	for (size_t hintNo = 0; hintNo < hints.hints.size(); hintNo++)
@@ -192,56 +223,98 @@ void	Interface::printAllHints()
 		const int row = index / hints_per_row;
 		const int col = index % hints_per_row;
 		std::string hint = printHint(index);
-		mvprintw( 5+row, 47+col*10, hint.c_str());
+		print( 5+row, 47+col*10, hint.c_str());
 	}
 }
 
 void	Interface::printWin()
 {
-	mvprintw( 1 + 7, 27, "┌─────────┨  Win  ┠─────────┐");
-	mvprintw( 3 + 7, 27, "│                           │");
-	mvprintw( 4 + 7, 27, "│       Not a big deal      │");
-	mvprintw( 5 + 7, 27, "│  This game is too simple  │");
-	mvprintw( 6 + 7, 27, "│                           │");
-	mvprintw( 7 + 7, 27, "└───────────────────────────┘");
+	print( 1 + 7, 27, "┌─────────┨  Win  ┠─────────┐");
+	print( 2 + 7, 27, "│                           │");
+	print( 3 + 7, 27, "│       Not a big deal      │");
+	print( 4 + 7, 27, "│  This game is too simple  │");
+	print( 5 + 7, 27, "│                           │");
+	print( 6 + 7, 27, "└───────────────────────────┘");
 }
 
 void	Interface::printLose()
 {
-	mvprintw( 1 + 7, 27, "┌─────────┨ Loser ┠─────────┐");
-	mvprintw( 3 + 7, 27, "│                           │");
-	mvprintw( 4 + 7, 27, "│       You have lost       │");
-	mvprintw( 5 + 7, 27, "│    Don't do that again    │");
-	mvprintw( 6 + 7, 27, "│                           │");
-	mvprintw( 7 + 7, 27, "└───────────────────────────┘");
+	print( 1 + 7, 27, "┌─────────┨ Loser ┠─────────┐");
+	print( 2 + 7, 27, "│                           │");
+	print( 3 + 7, 27, "│       You have lost       │");
+	print( 4 + 7, 27, "│    Don't do that again    │");
+	print( 5 + 7, 27, "│                           │");
+	print( 6 + 7, 27, "└───────────────────────────┘");
+}
+
+void	Interface::printSmallTerminal()
+{
+	print( 1 + 7, 27, "┌────┨ Need more space ┠────┐");
+	print( 2 + 7, 27, "│                           │");
+	print( 3 + 7, 27, "│ Your terminal should have │");
+	print( 4 + 7, 27, "│  at least size of  86x18  │");
+	print( 5 + 7, 27, "│                           │");
+	print( 6 + 7, 27, "└───────────────────────────┘");
 }
 
 void	Interface::printHelp()
 {
 	clear();
-	mvprintw( 1, 0, "┌────────────────────────────┨ ZweiStein Help and Rules┠─────────────────────────────┐");
-	mvprintw( 2, 0, "│ The game goal is to open all cards in square of 6x6 cards. Every row of square     │");
-	mvprintw( 3, 0, "│contains cards of one type only. For example, first row contains arabic digits,     │");
-	mvprintw( 4, 0, "│second - letters, etc. Use logic and open cards with method of exclusion. If card   │");
-	mvprintw( 5, 0, "│doesn't opened, cell contains every possible cards. For example, │AB DEF│ means that│");
-	mvprintw( 6, 0, "│this cell may contain every latin letter except 'C' (because card with 'C' image is │");
-	mvprintw( 7, 0, "│absent. To open card use 'claim' button and to exclude card use 'dissmiss' key.     │");
-	mvprintw( 8, 0, "│ Use tips to solve this puzzle. There are 4 types of hints:                         │");
-	mvprintw( 9, 0, "│1) Vertical hint. For example, 6⇕+. It means that 6 and + are located in the same   │");
-	mvprintw(10, 0, "│column.                                                                             │");
-	mvprintw(11, 0, "│2) Ajacent hint. Looks like ÷⇔4. It states that ÷ and 4 are in the ajacent columns  │");
-	mvprintw(12, 0, "│but it tells nothing about which letter is on the left side and which is on the     │");
-	mvprintw(13, 0, "│right.                                                                              │");
-	mvprintw(14, 0, "│3) LeftRight hint. 3⋯√. It says that the 3 is on the left side of another but no    │");
-	mvprintw(15, 0, "│information about the distance between those cards.                                 │");
-	mvprintw(16, 0, "│4) ₴⇔⚁⇔3. ⚁ is in the middle and others are at the left and right ajacent columns.  │");
-	mvprintw(17, 0, "│No information about about which is on the left and which is on the right, though.  │");
-	mvprintw(18, 0, "└<Press any button to return>────────────────────────────────────────────────────────┘");
+	print( 1, 0, "┌────────────────────────────┨ ZweiStein Help and Rules┠─────────────────────────────┐");
+	print( 2, 0, "│ The game goal is to open all cards in square of 6x6 cards. Every row of square     │");
+	print( 3, 0, "│contains cards of one type only. For example, first row contains arabic digits,     │");
+	print( 4, 0, "│second - letters, etc. Use logic and open cards with method of exclusion. If card   │");
+	print( 5, 0, "│doesn't opened, cell contains every possible cards. For example, │AB DEF│ means that│");
+	print( 6, 0, "│this cell may contain every latin letter except 'C' (because card with 'C' image is │");
+	print( 7, 0, "│absent. To open card use 'claim' button and to exclude card use 'dissmiss' key.     │");
+	print( 8, 0, "│ Use tips to solve this puzzle. There are 4 types of hints:                         │");
+	print( 9, 0, "│1) Vertical hint. For example, 6⇕+. It means that 6 and + are located in the same   │");
+	print(10, 0, "│column.                                                                             │");
+	print(11, 0, "│2) Ajacent hint. Looks like ÷⇔4. It states that ÷ and 4 are in the ajacent columns  │");
+	print(12, 0, "│but it tells nothing about which letter is on the left side and which is on the     │");
+	print(13, 0, "│right.                                                                              │");
+	print(14, 0, "│3) LeftRight hint. 3⋯√. It says that the 3 is on the left side of another but no    │");
+	print(15, 0, "│information about the distance between those cards.                                 │");
+	print(16, 0, "│4) ₴⇔⚁⇔3. ⚁ is in the middle and others are at the left and right ajacent columns.  │");
+	print(17, 0, "│No information about about which is on the left and which is on the right, though.  │");
+	print(18, 0, "└<Press any button to return>────────────────────────────────────────────────────────┘");
+}
+
+void	Interface::print(int y, int x , const char* string)
+{
+	int currentXSize;
+	int currentYSize;
+
+	getmaxyx(mainwin, currentYSize, currentXSize);
+
+	int delta_x = (currentXSize - interfaceXSize)/2;
+	int delta_y = (currentYSize - interfaceYSize)/2;
+
+	mvprintw(y+delta_y, x+delta_x, string);
+}
+
+bool	Interface::isTerminalHasEnoughSize()
+{
+	int currentXSize;
+	int currentYSize;
+
+	getmaxyx(mainwin, currentYSize, currentXSize);
+
+	int delta_x = (currentXSize - interfaceXSize)/2;
+	int delta_y = (currentYSize - interfaceYSize)/2;
+
+	if (delta_x < 0 || delta_y < 0)
+	{
+		return false;
+	}else
+	{
+		return true;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
 
-Cursor::Cursor()
+Cursor::Cursor(Interface* intrface)
 	: row(0)
 	, col(0)
 	, subvalue(0)
@@ -249,6 +322,7 @@ Cursor::Cursor()
 	, hintNo(0)
 	, hintRow(0)
 	, hintCol(0)
+	, interface (intrface)
 
 {
 
@@ -372,13 +446,13 @@ void Cursor::draw()
 	{
 		case CursorZone::field:
 		{
-			mvprintw(5 + row * 2 - 1, 3 + col * 7 + subvalue, "🠛");
-			mvprintw(5 + row * 2 + 1, 3 + col * 7 + subvalue, "🠙");
+			interface->print(5 + row * 2 - 1, 3 + col * 7 + subvalue, "🠛");
+			interface->print(5 + row * 2 + 1, 3 + col * 7 + subvalue, "🠙");
 		}break;
 		case CursorZone::hints:
 		{
-			mvprintw(5 + hintRow, 47 + hintCol * 10, "🠖");
-			mvprintw(5 + hintRow, 47 + hintCol * 10 + 5, "🠔");
+			interface->print(5 + hintRow, 47 + hintCol * 10, "🠖");
+			interface->print(5 + hintRow, 47 + hintCol * 10 + 5, "🠔");
 		}break;
 	}
 }

@@ -1,15 +1,19 @@
 ﻿#ifndef INTERFACE_H
 #define INTERFACE_H
 
+#include <ncurses.h>
+
 #include "field.h"
 #include "hints.h"
 
 enum class CursorZone { field, hints};
 
+class Interface;
+
 class Cursor
 {
 public:
-	Cursor();
+	Cursor(Interface*);
 	void moveRight();
 	void moveLeft();
 	void moveUp();
@@ -27,12 +31,14 @@ private:
 	size_t		hintNo;
 	size_t		hintRow;
 	size_t		hintCol;
+	Interface*	interface;
 };
 
 class Interface
 {
 public:
-	Interface(Field* field);
+	Interface();
+	~Interface();
 	void		printGame();
 	std::string	printCell(int row, int col);
 	void		printAllCells();
@@ -43,17 +49,25 @@ public:
 	void		printCommandError();
 	void		printWin();
 	void		printLose();
+	void		printSmallTerminal();
+	bool		isTerminalHasEnoughSize();
 	void		printHelp();
 	void		switchHintAutoHide();
+	void		print(int, int, const char*);
 
 	Cursor cursor;
 
 private:
-	Field* _field;
+	Field& _field;
 	std::array<std::array<std::string, 6>, 6> _literals;
 	std::map<HintType, std::string> _hint_literals;
 	std::vector<bool>_hints_visibility;
 	bool _hintAutoHide;
+
+	WINDOW* mainwin;
+
+	const int interfaceXSize = 86;
+	const int interfaceYSize = 19;
 
 };
 
