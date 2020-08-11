@@ -1,4 +1,4 @@
-﻿#include "hintleftright.h"
+#include "hintleftright.h"
 
 
 
@@ -71,7 +71,7 @@ bool HintLeftRight::applyToField()
 	if (second_cell->player_knows_value)
 	{
 		size_t row = first_cell->row;
-		for (size_t c = 5; c >= first_cell->col; c--)
+		for (int c = 5; c >= static_cast<int>(first_cell->col); c--)
 		{
 			Field::Instance().switchOffSubValue(row, c, second_cell->getValue());
 		}

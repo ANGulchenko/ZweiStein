@@ -61,12 +61,13 @@ private:
 	Field& _field;
 	std::array<std::array<std::string, 6>, 6> _literals;
 	std::map<HintType, std::string> _hint_literals;
+
 	std::vector<bool>_hints_visibility;
 	bool _hintAutoHide;
 
 	WINDOW* mainwin;
 
-	const int interfaceXSize = 86;
+	const int interfaceXSize = 80;
 	const int interfaceYSize = 19;
 
 };

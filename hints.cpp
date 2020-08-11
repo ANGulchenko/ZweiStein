@@ -1,12 +1,12 @@
-﻿#include "hints.h"
+#include "hints.h"
 #include <iostream>
 
 Hints::Hints()
 	: hintProbabilities {
-							{HintType::vertical, 20},
-							{HintType::ajacent, 40},
-							{HintType::leftRight, 20},
-							{HintType::threeAjacent, 120}
+							{HintType::vertical, 10},
+							{HintType::ajacent, 30},
+							{HintType::leftRight, 60},
+							{HintType::threeAjacent, 20}
 						}
 	, veryRandomDevice (randomDevice())
 {

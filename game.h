@@ -1,4 +1,4 @@
-﻿#ifndef GAME_H
+#ifndef GAME_H
 #define GAME_H
 
 #include <array>
@@ -21,8 +21,8 @@ public:
 private:
 	Field&		field;
 	Hints&		hints;
-	Interface*	interface;
-	Command*	command;
+	Interface	interface;
+	Command		command;
 	GameStatus	gameStatus;
 };
 

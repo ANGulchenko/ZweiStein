@@ -1,11 +1,12 @@
-﻿#include <iostream>
+#include <iostream>
 
 #include "interface.h"
 
 Interface::Interface()
-	: _field (Field::Instance())
+	: cursor(this)
+	, _field (Field::Instance())
 	, _hintAutoHide(true)
-	, cursor(this)
+
 {
 	_literals[0] = {"1", "2", "3", "4", "5", "6"};
 	_literals[1] = {"A", "B", "C", "D", "E", "F"};
@@ -81,7 +82,7 @@ void		Interface::printAllCells()
 		for (int c = 0; c < 6; c++)
 		{
 			std::string cell = printCell(r, c);
-			print( 5+r*2, 3+c*7, cell.c_str());
+			print(3+r*2, 2+c*7, cell.c_str());
 		}
 	}
 }
@@ -96,24 +97,25 @@ void	Interface::printGame()
 		printSmallTerminal();
 		return;
 	}
-	print( 1, 0, "┌────────────────┨ ZweiStein ┠───────────────────────────────────────────────────────┐");
-	print( 2, 0, "│                                             ┌──────────────┨ Hints ┠──────────────┐│");
-	print( 3, 0, "│ │A     │B     │C     │D     │E     │F     │ │     You can hide unwanted hints     ││");
-	print( 4, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │       with  'dismiss' command       ││");
-	print( 5, 0, "│1│      │      │      │      │      │      │ │                                     ││");
-	print( 6, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	print( 7, 0, "│2│      │      │      │      │      │      │ │                                     ││");
-	print( 8, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	print( 9, 0, "│3│      │      │      │      │      │      │ │                                     ││");
-	print(10, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	print(11, 0, "│4│      │      │      │      │      │      │ │                                     ││");
-	print(12, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	print(13, 0, "│5│      │      │      │      │      │      │ │                                     ││");
-	print(14, 0, "│─┼──────┼──────┼──────┼──────┼──────┼──────┤ │                                     ││");
-	print(15, 0, "│6│      │      │      │      │      │      │ │                                     ││");
-	print(16, 0, "│─┴──────┴──────┴──────┴──────┴──────┴──────┘ └─────────────────────────────────────┘│");
-	print(17, 0, "│ Commands: (z)exit, (wasd)move, (q)claim, (e)dismiss, (p)help    (h)HintAutoHide:NA │");
-	print(18, 0, "└────────────────────────────────────────────────────────────────────────────────────┘");
+	print( 1, 0, "┌────────────────┨ ZweiStein ┠─────────────────────────────────────────────────┐");
+	print( 2, 0, "│┌──────┬──────┬──────┬──────┬──────┬──────┐┌────────────┨ Hints ┠────────────┐│");
+	print( 3, 0, "││      │      │      │      │      │      ││   You can hide unwanted hints   ││");
+	print( 4, 0, "│├──────┼──────┼──────┼──────┼──────┼──────┤│     with  'dismiss' command     ││");
+	print( 5, 0, "││      │      │      │      │      │      ││                                 ││");
+	print( 6, 0, "│├──────┼──────┼──────┼──────┼──────┼──────┤│                                 ││");
+	print( 7, 0, "││      │      │      │      │      │      ││                                 ││");
+	print( 8, 0, "│├──────┼──────┼──────┼──────┼──────┼──────┤│                                 ││");
+	print( 9, 0, "││      │      │      │      │      │      ││                                 ││");
+	print(10, 0, "│├──────┼──────┼──────┼──────┼──────┼──────┤│                                 ││");
+	print(11, 0, "││      │      │      │      │      │      ││                                 ││");
+	print(12, 0, "│├──────┼──────┼──────┼──────┼──────┼──────┤│                                 ││");
+	print(13, 0, "││      │      │      │      │      │      ││                                 ││");
+	print(14, 0, "│└──────┴──────┴──────┴──────┴──────┴──────┘│                                 ││");
+	print(15, 0, "│ Commands: (z)exit, (wasd)move, (q)claim,  │                                 ││");
+	print(16, 0, "│           (e)dismiss, (p)help             └─────────────────────────────────┘│");
+	print(17, 0, "│                                                           (h)HintAutoHide:NA │");
+	print(18, 0, "└──────────────────────────────────────────────────────────────────────────────┘");
+
 	printAllCells();
 	hideUselessHints();
 	printAllHints();
@@ -210,7 +212,7 @@ std::string	Interface::printHint(size_t index)
 		return res;
 
 	}
-	return "       ";
+	return "      ";
 }
 
 void	Interface::printAllHints()
@@ -223,7 +225,7 @@ void	Interface::printAllHints()
 		const int row = index / hints_per_row;
 		const int col = index % hints_per_row;
 		std::string hint = printHint(index);
-		print( 5+row, 47+col*10, hint.c_str());
+		print( 5+row, 45+col*8, hint.c_str());
 	}
 }
 
@@ -260,24 +262,24 @@ void	Interface::printSmallTerminal()
 void	Interface::printHelp()
 {
 	clear();
-	print( 1, 0, "┌────────────────────────────┨ ZweiStein Help and Rules┠─────────────────────────────┐");
-	print( 2, 0, "│ The game goal is to open all cards in square of 6x6 cards. Every row of square     │");
-	print( 3, 0, "│contains cards of one type only. For example, first row contains arabic digits,     │");
-	print( 4, 0, "│second - letters, etc. Use logic and open cards with method of exclusion. If card   │");
-	print( 5, 0, "│doesn't opened, cell contains every possible cards. For example, │AB DEF│ means that│");
-	print( 6, 0, "│this cell may contain every latin letter except 'C' (because card with 'C' image is │");
-	print( 7, 0, "│absent. To open card use 'claim' button and to exclude card use 'dissmiss' key.     │");
-	print( 8, 0, "│ Use tips to solve this puzzle. There are 4 types of hints:                         │");
-	print( 9, 0, "│1) Vertical hint. For example, 6⇕+. It means that 6 and + are located in the same   │");
-	print(10, 0, "│column.                                                                             │");
-	print(11, 0, "│2) Ajacent hint. Looks like ÷⇔4. It states that ÷ and 4 are in the ajacent columns  │");
-	print(12, 0, "│but it tells nothing about which letter is on the left side and which is on the     │");
-	print(13, 0, "│right.                                                                              │");
-	print(14, 0, "│3) LeftRight hint. 3⋯√. It says that the 3 is on the left side of another but no    │");
-	print(15, 0, "│information about the distance between those cards.                                 │");
-	print(16, 0, "│4) ₴⇔⚁⇔3. ⚁ is in the middle and others are at the left and right ajacent columns.  │");
-	print(17, 0, "│No information about about which is on the left and which is on the right, though.  │");
-	print(18, 0, "└<Press any button to return>────────────────────────────────────────────────────────┘");
+	print( 1, 0, "┌────────────────────────────┨ ZweiStein Help and Rules┠───────────────────────┐");
+	print( 2, 0, "│The game goal is to open all cards in square of 6x6 cards. Every row of square│");
+	print( 3, 0, "│contains cards of one type only. For example, first row contains arabic digits│");
+	print( 4, 0, "│second - letters, etc. Open next cards with method of exclusion. If card does │");
+	print( 5, 0, "│not opened, cell contains any possible card. For example, │AB DEF│ means that │");
+	print( 6, 0, "│this cell may contain every latin letter except C(because card with C image is│");
+	print( 7, 0, "│absent. To open card use CLAIM button and to exclude card use DISMISS key.    │");
+	print( 8, 0, "│ Use tips to solve this puzzle. There are 4 types of hints:                   │");
+	print( 9, 0, "│1) Vertical hint. For example, 6⇕+. It means that 6 and + are in the same     │");
+	print(10, 0, "│column.                                                                       │");
+	print(11, 0, "│2) Ajacent hint. Like ÷⇔4. It states that ÷ and 4 are in the ajacent columns  │");
+	print(12, 0, "│but it tells nothing about which letter is on the left and which is on the    │");
+	print(13, 0, "│right.                                                                        │");
+	print(14, 0, "│3) L-R hint. 3⋯√. It says that the 3 is on the left side of another but no    │");
+	print(15, 0, "│information about the distance between those cards.                           │");
+	print(16, 0, "│4) ₴⇔⚁⇔3. ⚁ is in the middle and others are at the ajacent columns. No info   │");
+	print(17, 0, "│about about which is on the left and which is on the right, though.           │");
+	print(18, 0, "└<Press any button to return>──────────────────────────────────────────────────┘");
 }
 
 void	Interface::print(int y, int x , const char* string)
@@ -446,13 +448,13 @@ void Cursor::draw()
 	{
 		case CursorZone::field:
 		{
-			interface->print(5 + row * 2 - 1, 3 + col * 7 + subvalue, "🠛");
-			interface->print(5 + row * 2 + 1, 3 + col * 7 + subvalue, "🠙");
+			interface->print(3 + row * 2 - 1, 2 + col * 7 + subvalue, "🠛");
+			interface->print(3 + row * 2 + 1, 2 + col * 7 + subvalue, "🠙");
 		}break;
 		case CursorZone::hints:
 		{
-			interface->print(5 + hintRow, 47 + hintCol * 10, "🠖");
-			interface->print(5 + hintRow, 47 + hintCol * 10 + 5, "🠔");
+			interface->print(5 + hintRow, 45 + hintCol * 8, "🠖");
+			interface->print(5 + hintRow, 45 + hintCol * 8 + 6, "🠔");
 		}break;
 	}
 }

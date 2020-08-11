@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "game.h"
 #include <curses.h>
 
@@ -9,15 +9,15 @@ Game::Game()
 {
 //	field.fillField();
 
-	interface = new Interface();
+	//interface = new Interface();
 
-	command = new Command();
+	//command = new Command();
 }
 
 Game::~Game()
 {
-	delete command;
-	delete interface;
+	//delete command;
+	//delete interface;
 //	delete field;
 }
 
@@ -25,8 +25,16 @@ void	Game::initPuzzle()
 {
 //	hints.i_face = interface;
 //	interface->printGame();
-	hints.createFullSetOfHints();
-	field.resetSubValues();
+	do
+	{
+		if (hints.hints.size() > 44)
+		{
+			hints.hints.clear();
+			field.resetSubValues();
+		}
+		hints.createFullSetOfHints();
+		field.resetSubValues();
+	}while (hints.hints.size() > 44);
 }
 
 void	Game::start()
@@ -35,38 +43,41 @@ void	Game::start()
 	//std::string command_str;
 	int ch;
 	//timeout(-1);
-	interface->printGame();
+	interface.printGame();
 	while (gameStatus == GameStatus::gameContinues)
 	{
-		interface->printGame();
+		interface.printGame();
 		ch = getch();
-		command->parse(ch);
+		command.parse(ch);
 
-		switch (command->type)
+		switch (command.type)
 		{
+			case CommandType::error:
+			{
+			}break;
 			case CommandType::quit:
 			{
 				gameStatus = GameStatus::gameLost;
 			}break;
 			case CommandType::move_up:
 			{
-				interface->cursor.moveUp();
+				interface.cursor.moveUp();
 			}break;
 			case CommandType::move_down:
 			{
-				interface->cursor.moveDown();
+				interface.cursor.moveDown();
 			}break;
 			case CommandType::move_left:
 			{
-				interface->cursor.moveLeft();
+				interface.cursor.moveLeft();
 			}break;
 			case CommandType::move_right:
 			{
-				interface->cursor.moveRight();
+				interface.cursor.moveRight();
 			}break;
 			case CommandType::claim:
 			{
-				bool res = field.tryValue(interface->cursor.row, interface->cursor.col, interface->cursor.subvalue);
+				bool res = field.tryValue(interface.cursor.row, interface.cursor.col, interface.cursor.subvalue);
 				if (!res)
 				{
 					gameStatus = GameStatus::gameLost;
@@ -74,28 +85,28 @@ void	Game::start()
 			}break;
 			case CommandType::dismiss:
 			{
-				if (interface->cursor.zone == CursorZone::field)
+				if (interface.cursor.zone == CursorZone::field)
 				{
-					bool res = field.switchOffSubValue(interface->cursor.row, interface->cursor.col, interface->cursor.subvalue);
+					bool res = field.switchOffSubValue(interface.cursor.row, interface.cursor.col, interface.cursor.subvalue);
 					if (!res)
 					{
 						gameStatus = GameStatus::gameLost;
 					}
 				}else
-				if (interface->cursor.zone == CursorZone::hints)
+				if (interface.cursor.zone == CursorZone::hints)
 				{
-					size_t index = interface->cursor.getHintNo();
-					interface->changeVisibilityOfHint(index);
+					size_t index = interface.cursor.getHintNo();
+					interface.changeVisibilityOfHint(index);
 				}
 			}break;
 			case CommandType::help:
 			{
-				interface->printHelp();
+				interface.printHelp();
 				getch();
 			}break;
 			case CommandType::toggle_autohide:
 			{
-				interface->switchHintAutoHide();
+				interface.switchHintAutoHide();
 			}break;
 		}
 
@@ -113,12 +124,12 @@ void	Game::start()
 		}break;
 		case GameStatus::gameWon:
 		{
-			interface->printWin();
+			interface.printWin();
 			getch();
 		}break;
 		case GameStatus::gameLost:
 		{
-			interface->printLose();
+			interface.printLose();
 			getch();
 		}break;
 	}
