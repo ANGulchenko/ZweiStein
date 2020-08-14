@@ -1,11 +1,10 @@
-﻿#include "game.h"
-#include <ncurses.h>
+#include "game.h"
 
 int main()
 {
-	Game* game = new Game();
-	game->initPuzzle();
-	game->start();
-	delete game;
+	Game game;
+	game.initPuzzle();
+	game.start();
+
 	return EXIT_SUCCESS;
 }

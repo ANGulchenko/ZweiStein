@@ -1,4 +1,4 @@
-﻿#include <ncurses.h>
+#include <ncurses.h>
 
 #include "command.h"
 
@@ -53,6 +53,10 @@ void	Command::parse(int button)
 		case 'p':
 		{
 			type = CommandType::help;
+		}break;
+		case 'm':
+		{
+			type = CommandType::about;
 		}break;
 
 

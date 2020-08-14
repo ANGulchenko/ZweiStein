@@ -104,6 +104,11 @@ void	Game::start()
 				interface.printHelp();
 				getch();
 			}break;
+			case CommandType::about:
+			{
+				interface.printAbout();
+				getch();
+			}break;
 			case CommandType::toggle_autohide:
 			{
 				interface.switchHintAutoHide();

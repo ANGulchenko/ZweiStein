@@ -1,11 +1,11 @@
-﻿#ifndef COMMAND_H
+#ifndef COMMAND_H
 #define COMMAND_H
 
 enum class CommandType { error, quit,
 						 move_up, move_down, move_left, move_right,
 						 claim, dismiss,
 						 toggle_autohide,
-						 help};
+						 help, about};
 
 class Command
 {

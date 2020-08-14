@@ -1,4 +1,4 @@
-﻿#ifndef INTERFACE_H
+#ifndef INTERFACE_H
 #define INTERFACE_H
 
 #include <ncurses.h>
@@ -49,6 +49,7 @@ public:
 	void		printCommandError();
 	void		printWin();
 	void		printLose();
+	void		printAbout();
 	void		printSmallTerminal();
 	bool		isTerminalHasEnoughSize();
 	void		printHelp();

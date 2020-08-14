@@ -97,7 +97,7 @@ void	Interface::printGame()
 		printSmallTerminal();
 		return;
 	}
-	print( 1, 0, "┌────────────────┨ ZweiStein ┠─────────────────────────────────────────────────┐");
+	print( 1, 0, "┌───────────────┨ ZweiStein ┠──────────────────────────────────────────────────┐");
 	print( 2, 0, "│┌──────┬──────┬──────┬──────┬──────┬──────┐┌────────────┨ Hints ┠────────────┐│");
 	print( 3, 0, "││      │      │      │      │      │      ││   You can hide unwanted hints   ││");
 	print( 4, 0, "│├──────┼──────┼──────┼──────┼──────┼──────┤│     with  'dismiss' command     ││");
@@ -112,7 +112,7 @@ void	Interface::printGame()
 	print(13, 0, "││      │      │      │      │      │      ││                                 ││");
 	print(14, 0, "│└──────┴──────┴──────┴──────┴──────┴──────┘│                                 ││");
 	print(15, 0, "│ Commands: (z)exit, (wasd)move, (q)claim,  │                                 ││");
-	print(16, 0, "│           (e)dismiss, (p)help             └─────────────────────────────────┘│");
+	print(16, 0, "│           (e)dismiss, (p)help, (m)about   └─────────────────────────────────┘│");
 	print(17, 0, "│                                                           (h)HintAutoHide:NA │");
 	print(18, 0, "└──────────────────────────────────────────────────────────────────────────────┘");
 
@@ -144,11 +144,11 @@ void	Interface::hideUselessHints()
 {
 	if (_hintAutoHide == false)
 	{
-		print(17, 82, "OFF");
+		print(17, 76, "OFF");
 		return;
 	}
 
-	print(17, 82, "ON");
+	print(17, 76, "ON");
 
 	Hints& hints = Hints::Instance();
 	for (size_t hintNo = 0; hintNo < hints.hints.size(); hintNo++)
@@ -245,6 +245,16 @@ void	Interface::printLose()
 	print( 2 + 7, 27, "│                           │");
 	print( 3 + 7, 27, "│       You have lost       │");
 	print( 4 + 7, 27, "│    Don't do that again    │");
+	print( 5 + 7, 27, "│                           │");
+	print( 6 + 7, 27, "└───────────────────────────┘");
+}
+
+void	Interface::printAbout()
+{
+	print( 1 + 7, 27, "┌───────┨ ZweiStein ┠───────┐");
+	print( 2 + 7, 27, "│                           │");
+	print( 3 + 7, 27, "│ by Alexander N. Gulchenko │");
+	print( 4 + 7, 27, "│         2020 GPLv3        │");
 	print( 5 + 7, 27, "│                           │");
 	print( 6 + 7, 27, "└───────────────────────────┘");
 }
