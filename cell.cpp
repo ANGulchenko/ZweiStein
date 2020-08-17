@@ -1,5 +1,6 @@
-﻿#include "cell.h"
+#include "cell.h"
 #include <assert.h>
+#include <algorithm>
 
 Cell::Cell()
 {
@@ -13,23 +14,16 @@ void Cell::resetSubValues()
 
 int Cell::countSubValues()
 {
-	int res = 0;
-	for (bool subvalue: subvalues)
-	{
-		if (subvalue == true)
-		{
-			res++;
-		}
-	}
-	return res;
+	return std::count_if(subvalues.begin(), subvalues.end(), [](bool i){return i == true;});
 }
 
 size_t	Cell::getIndexOfFirstTrueSubvalue()
 {
 	// We need it when countSubValues() == 1 to
 	// determine which exactly subvalue is left.
+
 	int res = 0;
-	for (bool subvalue: subvalues)
+	for (bool& subvalue: subvalues)
 	{
 		if (subvalue == true)
 		{

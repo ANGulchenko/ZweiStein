@@ -1,10 +1,10 @@
-﻿#include <algorithm>
+#include <algorithm>
 #include <iostream>
 
 #include "field.h"
+#include "Randomizer2000.h"
 
 Field::Field()
-	: veryrandomDevice (randomDevice())
 {
 	for (auto &row : field)
 	{
@@ -18,7 +18,7 @@ Field::Field()
 
 	for (auto &row : field)
 	{
-		std::shuffle(row.begin(), row.end(), veryrandomDevice);
+		Randomizer2000::Instance().shuffle(row);
 	}
 
 	for (std::size_t row = 0; row < field.size(); row++)
@@ -31,12 +31,10 @@ Field::Field()
 	}
 
 	// We need a few Cells, which are known to player, to start with.
-	std::uniform_int_distribution<int> dist(0, 5);
-
-	int r1 = dist(veryrandomDevice);
-	int c1 = dist(veryrandomDevice);
-	int r2 = dist(veryrandomDevice);
-	int c2 = dist(veryrandomDevice);
+	int r1 = Randomizer2000::Instance().random(0, 5);
+	int c1 = Randomizer2000::Instance().random(0, 5);
+	int r2 = Randomizer2000::Instance().random(0, 5);
+	int c2 = Randomizer2000::Instance().random(0, 5);
 
 	aFewAlreadyKnownCellsToBeginALevelWith.push_back(std::make_pair(r1, c1));
 	aFewAlreadyKnownCellsToBeginALevelWith.push_back(std::make_pair(r2, c2));
@@ -124,7 +122,7 @@ Cell*	Field::getCell(int row, int column)
 	return &(field[row][column]);
 }
 
-int	Field::determinant()
+int	Field::determinant() const
 {
 	int determinant = 0;
 	for (auto cell_row: field)
@@ -174,9 +172,9 @@ std::vector<Cell*>	Field::getAllCellsWhichValueIsKnownToPlayer()
 
 bool		Field::isWin()
 {
-	for (auto cell_row: field)
+	for (const auto& cell_row: field)
 	{
-		for (auto cell: cell_row)
+		for (const auto& cell: cell_row)
 		{
 			if (cell.player_knows_value == false)
 			{

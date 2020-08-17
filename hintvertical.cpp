@@ -1,16 +1,14 @@
-﻿#include "hintvertical.h"
+#include "hintvertical.h"
 
 HintVertical::HintVertical()
 {
 	type = HintType::vertical;
 
 	std::vector<Cell*> basic_cells = Field::Instance().getAllCellsWhichValueIsKnownToPlayer();
-	std::shuffle(basic_cells.begin(), basic_cells.end(), random_device);
-	first_cell = basic_cells[0];
+	int first_cell_index = Randomizer2000::Instance().random(0, basic_cells.size()-1);
+	first_cell = basic_cells[first_cell_index];
 
-	//std::cout << "HV first_cell_test. Row="<<first_cell->row<<" Col="<<first_cell->col << std::endl;
-
-	// now we should find unknown to player cell in this col
+	// now we should find all unknown to player cells in this col
 	int col = first_cell->col;
 
 	std::vector<Cell*> unknown_cells;
@@ -23,11 +21,11 @@ HintVertical::HintVertical()
 		}
 	}
 
-	//std::pair<int, int> second_cell;
+	// ... and select a random one from this vector
 	if (!unknown_cells.empty())
 	{
-		std::shuffle(unknown_cells.begin(), unknown_cells.end(), random_device);
-		second_cell = unknown_cells[0];
+		int second_cell_index = Randomizer2000::Instance().random(0, unknown_cells.size()-1);
+		second_cell = unknown_cells[second_cell_index];
 	}
 	else
 	{

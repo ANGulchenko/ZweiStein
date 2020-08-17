@@ -7,8 +7,8 @@ HintLeftRight::HintLeftRight()
 	type = HintType::leftRight;
 
 	std::vector<Cell*> basic_cells = Field::Instance().getAllCellsWhichValueIsKnownToPlayer();
-	std::shuffle(basic_cells.begin(), basic_cells.end(), random_device);
-	first_cell = basic_cells[0];
+	int first_cell_index = Randomizer2000::Instance().random(0, basic_cells.size()-1);
+	first_cell = basic_cells[first_cell_index];
 
 	// now we should find unknown to player cell with bigger column index
 	int col = first_cell->col;
@@ -29,9 +29,8 @@ HintLeftRight::HintLeftRight()
 
 	if (!unknown_cells.empty())
 	{
-		std::shuffle(unknown_cells.begin(), unknown_cells.end(), random_device);
-		second_cell = unknown_cells[0];
-		//std::cout << "second cell exists!"<<std::endl;
+		int second_cell_index = Randomizer2000::Instance().random(0, unknown_cells.size()-1);
+		second_cell = unknown_cells[second_cell_index];
 	}
 	else
 	{

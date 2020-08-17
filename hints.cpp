@@ -1,5 +1,8 @@
-#include "hints.h"
 #include <iostream>
+
+#include "hints.h"
+#include "Randomizer2000.h"
+
 
 Hints::Hints()
 	: hintProbabilities {
@@ -8,7 +11,6 @@ Hints::Hints()
 							{HintType::leftRight, 60},
 							{HintType::threeAjacent, 20}
 						}
-	, veryRandomDevice (randomDevice())
 {
 
 
@@ -34,9 +36,7 @@ Hint*	Hints::getNewHint(HintType hintType)
 	}else
 	{
 		int probabilityDiapasoneUpperLimit = (--hintProbabilityDiapasones.end())->first;
-		std::uniform_int_distribution<int> dist(0, probabilityDiapasoneUpperLimit);
-
-		int random_int = dist(veryRandomDevice);
+		int random_int = Randomizer2000::Instance().random(0, probabilityDiapasoneUpperLimit);
 
 		auto iD = hintProbabilityDiapasones.begin();
 		while (iD->first < random_int)
@@ -111,5 +111,5 @@ void	Hints::createFullSetOfHints()
 		}
 	}
 
-	std::shuffle(hints.begin(), hints.end(), veryRandomDevice);
+	Randomizer2000::Instance().shuffle(hints);
 }

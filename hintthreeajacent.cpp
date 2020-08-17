@@ -1,4 +1,4 @@
-﻿#include "hintthreeajacent.h"
+#include "hintthreeajacent.h"
 
 HintThreeAjacent::HintThreeAjacent()
 {
@@ -25,8 +25,8 @@ HintThreeAjacent::HintThreeAjacent()
 		return;
 	}
 
-	std::shuffle(basic_cells.begin(), basic_cells.end(), random_device);
-	second_cell = basic_cells[0];
+	int second_cell_index = Randomizer2000::Instance().random(0, basic_cells.size()-1);
+	second_cell = basic_cells[second_cell_index];
 	size_t col = second_cell->col;
 
 	for (size_t r = 0; r <= 5; r++)
@@ -35,14 +35,14 @@ HintThreeAjacent::HintThreeAjacent()
 		side2_cells.push_back(Field::Instance().getCell(r, col+1));
 	}
 
-	std::shuffle(side1_cells.begin(), side1_cells.end(), random_device);
-	std::shuffle(side2_cells.begin(), side2_cells.end(), random_device);
+	Randomizer2000::Instance().shuffle(side1_cells);
+	Randomizer2000::Instance().shuffle(side2_cells);
 
 	// We have 3 cells. Middle one already in its place
 	// But 2 others must be randomly placed.
 
 	std::vector<Cell*> temp_vector {side1_cells[0], side2_cells[0]};
-	std::shuffle(temp_vector.begin(), temp_vector.end(), random_device);
+	Randomizer2000::Instance().shuffle(temp_vector);
 
 	first_cell = temp_vector[0];
 	third_cell = temp_vector[1];

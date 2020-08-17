@@ -1,9 +1,8 @@
-﻿#ifndef FIELD_H
+#ifndef FIELD_H
 #define FIELD_H
 
 #include <array>
 #include <vector>
-#include <random>
 
 #include "cell.h"
 
@@ -18,14 +17,14 @@ public:
 	bool	tryValue(int row, int column, int value);
 	bool	switchOffSubValue(int row, int column, int subvalue_index);
 	Cell*	getCell(int row, int column);
-	int		determinant();	// Works in the same way as in matrix.
-							// Used to check if field has changed.
+
+	// Works in the similar way as in matrix. Used to check if field has changed.
+	int		determinant() const;
 	void	resetSubValues();
+
+	// Is needed to make Hints more useful, not just pure random
 	std::vector<Cell*>	getAllCellsWhichValueIsKnownToPlayer();
 	bool	isWin();
-	// getAllCellsWhichValueIsKnownToPlayer() is needed to make Hints more useful
-	// not just pure random
-
 
 private:
 	Field();
@@ -35,9 +34,6 @@ private:
 	std::array<std::array<Cell, 6>, 6> field; // row:column
 
 	std::vector<std::pair<int, int>> aFewAlreadyKnownCellsToBeginALevelWith;
-
-	std::random_device randomDevice;
-	std::mt19937 veryrandomDevice;
 };
 
 #endif // FIELD_H

@@ -58,8 +58,6 @@ void	Command::parse(int button)
 		{
 			type = CommandType::about;
 		}break;
-
-
 	}
 
 }
