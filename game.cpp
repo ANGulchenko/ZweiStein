@@ -1,48 +1,28 @@
-#include <iostream>
 #include "game.h"
-#include <curses.h>
 
 Game::Game()
 	: field (Field::Instance())
 	, hints (Hints::Instance())
 	, gameStatus(GameStatus::gameContinues)
 {
-//	field.fillField();
 
-	//interface = new Interface();
-
-	//command = new Command();
 }
 
 Game::~Game()
 {
-	//delete command;
-	//delete interface;
-//	delete field;
+
 }
 
 void	Game::initPuzzle()
 {
-//	hints.i_face = interface;
-//	interface->printGame();
-	do
-	{
-		if (hints.hints.size() > 44)
-		{
-			hints.hints.clear();
-			field.resetSubValues();
-		}
-		hints.createFullSetOfHints();
-		field.resetSubValues();
-	}while (hints.hints.size() > 44);
+	hints.createFullSetOfHints();
+	field.resetSubValues();
 }
 
 void	Game::start()
 {
 	//main cycle: print game| read and parse commands | use commands
-	//std::string command_str;
 	int ch;
-	//timeout(-1);
 	interface.printGame();
 	while (gameStatus == GameStatus::gameContinues)
 	{

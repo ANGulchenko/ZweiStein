@@ -1,8 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <array>
-
 #include "interface.h"
 #include "field.h"
 #include "hints.h"

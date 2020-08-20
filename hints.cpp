@@ -77,7 +77,21 @@ Hint*	Hints::getNewHint(HintType hintType)
 void	Hints::createFullSetOfHints()
 {
 	Field& field = Field::Instance();
+	do
+	{
+		if (hints.size() > 44)
+		{
+			hints.clear();
+			field.resetSubValues();
+		}
+		createSingleSetOfHints();
+		field.resetSubValues();
+	}while (hints.size() > 44);
+}
 
+void	Hints::createSingleSetOfHints()
+{
+	Field& field = Field::Instance();
 	Hint* temp_hint = nullptr;
 
 	while (!field.isWin())

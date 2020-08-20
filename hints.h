@@ -23,6 +23,7 @@ public:
 	~Hints();
 	Hint*	getNewHint(HintType hintType);
 	void	createFullSetOfHints();
+	void	createSingleSetOfHints();
 
 	std::vector<Hint*> hints;
 //	Interface* i_face;
