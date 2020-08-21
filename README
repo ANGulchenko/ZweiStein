@@ -1,0 +1,47 @@
+───────┨ What is this? ┠────────
+
+ZweiStein is a TUI reimplementation of the Eistein puzzle.
+
+───────┨ Installing ┠────────
+
+Newest code of ZweiStein can be found here: https://github.com/ANGulchenko/ZweiStein
+There on the GitHub you can also find the prebiuld for AMD64 version.
+
+ZweiStein was created to be assembled with CMake. 
+So just run these commands:
+
+cmake ./
+make
+
+───────┨ How to play? ┠────────
+
+The game goal is to open all cards in square of 6x6 cards. Every row of square
+contains cards of one type only. For example, first row contains arabic digits
+second - letters, etc. Open next cards with method of exclusion. If card does
+not opened, cell contains any possible card. For example, │AB DEF│ means that
+this cell may contain every latin letter except C(because card with C image is
+absent. To open card use CLAIM button and to exclude card use DISMISS key.
+Use tips to solve this puzzle. There are 4 types of hints:
+1) Vertical hint. For example, 6⇕+. It means that 6 and + are in the same
+column. 
+2) Ajacent hint. Like ÷⇔4. It states that ÷ and 4 are in the ajacent columns
+but it tells nothing about which letter is on the left and which is on the
+right. 
+3) L-R hint. 3⋯√. It says that the 3 is on the left side of another but no 
+information about the distance between those cards. 
+4) ₴⇔⚁⇔3. ⚁ is in the middle and others are at the ajacent columns. No info 
+about about which is on the left and which is on the right, though. 
+
+───────┨ Who is the author? ┠────────
+
+ZweiStein was written by Alexander N. Gulchenko aka Alexander Stahl in the 2020.
+
+───────┨ What is the license? ┠────────
+
+GPLv3. You can read it once more in the LICENSE file.
+
+───────┨ What if I don't like it? ┠────────
+
+You can destroy your copy in whatever way you like.
+
+
