@@ -24,7 +24,10 @@ Hints::Hints()
 
 Hints::~Hints()
 {
-
+	for (auto& h: hints)
+	{
+		delete h;
+	}
 }
 
 Hint*	Hints::getNewHint(HintType hintType)
@@ -81,6 +84,10 @@ void	Hints::createFullSetOfHints()
 	{
 		if (hints.size() > 44)
 		{
+			for (auto& h: hints)
+			{
+				delete h;
+			}
 			hints.clear();
 			field.resetSubValues();
 		}

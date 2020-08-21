@@ -22,13 +22,11 @@ void	Game::initPuzzle()
 void	Game::start()
 {
 	//main cycle: print game| read and parse commands | use commands
-	int ch;
 	interface.printGame();
 	while (gameStatus == GameStatus::gameContinues)
 	{
 		interface.printGame();
-		ch = getch();
-		command.parse(ch);
+		command.parse(getch());
 
 		switch (command.type)
 		{

@@ -45,7 +45,7 @@ HintLeftRight::~HintLeftRight()
 
 bool HintLeftRight::applyToField()
 {
-	Field& field = Field::Instance();
+	const Field& field = Field::Instance();
 	int old_determinant = field.determinant();
 
 	if (first_cell == nullptr || second_cell == nullptr)

@@ -125,9 +125,9 @@ Cell*	Field::getCell(int row, int column)
 int	Field::determinant() const
 {
 	int determinant = 0;
-	for (auto cell_row: field)
+	for (const auto& cell_row: field)
 	{
-		for (auto cell: cell_row)
+		for (const auto& cell: cell_row)
 		{
 			determinant += cell.countSubValues();
 		}
@@ -156,13 +156,13 @@ std::vector<Cell*>	Field::getAllCellsWhichValueIsKnownToPlayer()
 {
 	std::vector<Cell*> res;
 
-	for (std::size_t row = 0; row < field.size(); row++)
+	for (auto& cell_row: field)
 	{
-		for (std::size_t col = 0; col < field[0].size(); col++)
+		for (auto& cell: cell_row)
 		{
-			if (field[row][col].player_knows_value)
+			if (cell.player_knows_value)
 			{
-				res.push_back(&field[row][col]);
+				res.push_back(&cell);
 			}
 		}
 	}

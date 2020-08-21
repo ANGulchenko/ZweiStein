@@ -55,7 +55,7 @@ HintThreeAjacent::~HintThreeAjacent()
 
 bool HintThreeAjacent::applyToField()
 {
-	Field& field = Field::Instance();
+	const Field& field = Field::Instance();
 	int old_determinant = field.determinant();
 
 	if (first_cell  == nullptr ||

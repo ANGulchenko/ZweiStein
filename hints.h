@@ -26,7 +26,6 @@ public:
 	void	createSingleSetOfHints();
 
 	std::vector<Hint*> hints;
-//	Interface* i_face;
 private:
 		Hints();
 		Hints(const Hints& root) = delete;
