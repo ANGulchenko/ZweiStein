@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 #set(CMAKE_CXX_COMPILER "g++")
 
 project(ZweiStein
-        VERSION 0.0.3
+        VERSION 0.0.4
         LANGUAGES CXX
         HOMEPAGE_URL "https://github.com/ANGulchenko/ZweiStein"
         DESCRIPTION "ZweiStein is a remake of Einstein puzzle for a text-only terminal.")
