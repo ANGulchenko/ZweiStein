@@ -5,20 +5,29 @@
 
 
 Hints::Hints()
-	: hintProbabilities {
-							{HintType::vertical, 10},
-							{HintType::ajacent, 30},
-							{HintType::leftRight, 60},
-							{HintType::threeAjacent, 20}
-						}
 {
+	initHintsProbability({
+							 {HintType::vertical, 10},
+							 {HintType::ajacent, 30},
+							 {HintType::leftRight, 60},
+							 {HintType::threeAjacent, 20}
+						 });
+}
 
-
-	int limit = 0;
-	for (auto i = hintProbabilities.begin(); i != hintProbabilities.end(); i++)
+void	Hints::initHintsProbability(const std::map<HintType, int>& new_probabilities)
+{
+	hintProbabilities.clear();
+	hintProbabilityDiapasones.clear();
+	for (auto& [type, value]: new_probabilities)
 	{
-		limit += i->second;
-		hintProbabilityDiapasones[limit] = i->first;
+		hintProbabilities[type] = value;
+	}
+	int limit = 0;
+	for (auto& [type, value]: hintProbabilities)
+	{
+		if (value <= 0) value = 1; // Zeroes can make making sat of Hints impossible;
+		limit += value;
+		hintProbabilityDiapasones[limit] = type;
 	}
 }
 

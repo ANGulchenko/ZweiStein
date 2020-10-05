@@ -13,6 +13,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+ADD_LIBRARY(AnyOption
+    AnyOption/anyoption.cpp
+    AnyOption/anyoption.h
+)
+
 ADD_LIBRARY(MainProgram
     game.cpp game.h
     cell.cpp cell.h
@@ -28,7 +33,7 @@ ADD_LIBRARY(MainProgram
 )
 
 add_executable(ZweiStein main.cpp)
-target_link_libraries(ZweiStein MainProgram)
+target_link_libraries(ZweiStein MainProgram AnyOption)
 
 set(CURSES_NEED_NCURSES TRUE)
 set(CURSES_NEED_WIDE TRUE)

@@ -11,7 +11,7 @@ enum class GameStatus { gameContinues, gameWon, gameLost};
 class Game
 {
 public:
-	Game();
+	Game(const std::map<HintType, int>& p = {});
 	~Game();
 	void	start();
 	void	initPuzzle();

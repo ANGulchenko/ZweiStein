@@ -1,11 +1,15 @@
 #include "game.h"
 
-Game::Game()
+Game::Game(const std::map<HintType, int>& p)
 	: field (Field::Instance())
 	, hints (Hints::Instance())
 	, gameStatus(GameStatus::gameContinues)
 {
-
+	if (p.size() > 0)
+	{
+		// User wants to change Hints probabilities
+		hints.initHintsProbability(p);
+	}
 }
 
 Game::~Game()

@@ -22,6 +22,7 @@ public:
 	}
 	~Hints();
 	Hint*	getNewHint(HintType hintType);
+	void	initHintsProbability(const std::map<HintType, int>& new_probabilities);
 	void	createFullSetOfHints();
 	void	createSingleSetOfHints();
 
