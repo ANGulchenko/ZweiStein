@@ -32,6 +32,10 @@ information about the distance between those cards.
 4) ₴⇔⚁⇔3. ⚁ is in the middle and others are at the ajacent columns. No info 
 about about which is on the left and which is on the right, though. 
 
+───────┨ I want to change a rules a bit ┠───────
+
+Run the game with -h or --help parameter to find out what options you have
+
 ───────┨ Who is the author? ┠────────
 
 ZweiStein was written by Alexander N. Gulchenko aka Alexander Stahl in the 2020.
